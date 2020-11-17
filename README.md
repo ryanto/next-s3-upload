@@ -25,11 +25,11 @@ S3_UPLOAD_BUCKET=name-of-s3-bucket
 S3_UPLOAD_REGION=bucket-region-us-east-1
 ```
 
-Next.js automatically supports [loading environment variables](https://nextjs.org/docs/basic-features/environment-variables) from a `.env.local` in the project's root. For development it's best to put these values into `.env.local`.
+Next.js automatically supports [loading environment variables](https://nextjs.org/docs/basic-features/environment-variables) from `.env.local` in the project's root. For development it's best to put these values into `.env.local`.
 
-For production, you'll also need to set these variables with your hosting provider. If you're using Vercel you can configure the [build step](https://vercel.com/docs/build-step#environment-variables) to use these variables.
+For production, you'll need to set these variables with your hosting provider. If you're using Vercel you can configure the [build step](https://vercel.com/docs/build-step#environment-variables) to use these variables.
 
-In the next sections we'll go over how to generate these values.
+In the next sections we'll go over how to generate values for these variables.
 
 ### S3 bucket
 
@@ -210,4 +210,4 @@ The `getImageData` is an async function that returns the height and width of the
 
 ## Help and questions
 
-This is a new project and I'd love to hear about your experience using it! If you ran into any trouble or have any suggestions please open an [issue](https://github.com/ryanto/next-s3-upload/issues) or contact me on [Twitter](https://twitter.com/ryantotweets).
+This is a new project and I'd love to hear about your experience using it! If you run into any trouble or have any suggestions please open an [issue](https://github.com/ryanto/next-s3-upload/issues) or contact me on [Twitter](https://twitter.com/ryantotweets).
