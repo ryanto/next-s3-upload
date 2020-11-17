@@ -23,6 +23,7 @@
     "react": ">=16",
     "next": ">=9.4"
   },
+  "repository": "github:ryanto/next-s3-upload",
   "husky": {
     "hooks": {
       "pre-commit": "tsdx lint"

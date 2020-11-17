@@ -39,7 +39,7 @@ Create a new S3 bucket and store the name of the bucket as `S3_UPLOAD_BUCKET` an
 
 Once the bucket is created you'll need to go to the permissions tab and make sure that public access is allowed.
 
-![Bucket public access](https://user-images.githubusercontent.com/89411/99425209-8aaf8780-28d0-11eb-9a8e-a665547eb5b8.png)
+![Bucket public access](https://user-images.githubusercontent.com/89411/99440530-b472a980-28e4-11eb-96e0-9c99005b65ee.png)
 
 You'll also need to add the following JSON under CORS permissions section.
 
@@ -92,9 +92,9 @@ When the policy editor opens, click on the _JSON_ tab and paste in the following
 
 **Important**: Before saving the policy, you'll need to replace:
 
----|---
-_ACCOUNT_ID_|Your AWS account ID. You can get this number by clicking on your name in the header. It's the number next to My account.
-_BUCKET_NAME_|The name of the bucket you created in the previous step.
+|---|---|
+|**ACCOUNT_ID**|Your AWS account ID. You can get this number by clicking on your name in the header. It's the number next to My account.|
+|**BUCKET_NAME**|The name of the bucket you created in the previous step.|
 
 Next, click review policy, and name the policy `next-s3-upload`. The name doesn't matter, so feel free to use anything you'd like. Follow any prompts and create the policy.
 
@@ -141,10 +141,10 @@ export default function UploadTest() {
 
 The `useS3Upload` hook returns three items needed to coordinate the upload.
 
----|---
-`FileInput`|This is a component that renders a _hidden_ file input. It needs to be rendered on the page in order to coordinate file access.
-`openFileDialog`|This is a function that opens the browser's select a file dialog. Once a file is selected the `FileInput`'s `onChange` action will fire.
-`uploadToS3(file)`|This is a function that will upload a `File` to your S3 bucket.
+|---|---|
+|`FileInput`|This is a component that renders a _hidden_ file input. It needs to be rendered on the page in order to coordinate file access.|
+|`openFileDialog`|This is a function that opens the browser's select a file dialog. Once a file is selected the `FileInput`'s `onChange` action will fire.|
+|`uploadToS3(file)`|This is a function that will upload a `File` to your S3 bucket.|
 
 ### Using next/image
 
