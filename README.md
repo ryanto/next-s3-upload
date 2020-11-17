@@ -122,7 +122,7 @@ In order for our Next app to securely communicate with S3 we'll need to create a
 export { APIRoute as default } from 'next-s3-upload';
 ```
 
-That's it. This module's `APIRoute` takes care of all the coordination with S3.
+That's it. This module's `APIRoute` takes care of all the communication with S3.
 
 ## Usage
 
