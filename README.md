@@ -206,7 +206,7 @@ export default function UploadTest() {
 }
 ```
 
-The `getImageData` is an async function that returns the height and width of the image. This data can be saved alongside the URL or key of the image so that it can be used with `next/image`.
+The `getImageData` is an async function that returns the height and width of the image. This data can be saved to your database alongside the URL of the image.
 
 ## Help and questions
 
