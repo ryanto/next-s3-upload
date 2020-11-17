@@ -210,4 +210,4 @@ The `getImageData` is an async function that returns the height and width of the
 
 ## Help and questions
 
-This is a new project and I'd love to hear about your experience using it. If you ran into any trouble or have any suggestions please open an [issue](https://github.com/ryanto/next-s3-upload/issues) or contact me on [Twitter](https://twitter.com/ryantotweets).
+This is a new project and I'd love to hear about your experience using it! If you ran into any trouble or have any suggestions please open an [issue](https://github.com/ryanto/next-s3-upload/issues) or contact me on [Twitter](https://twitter.com/ryantotweets).
