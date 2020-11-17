@@ -124,7 +124,7 @@ export { APIRoute as default } from 'next-s3-upload';
 
 ## Usage
 
-This package provides a `useS3Upload` hook that gives you all of the pieces you need to coordinate an upload from your application to S3.
+This package provides a `useS3Upload` hook that gives you all of the pieces needed to coordinate an upload from your application to S3.
 
 Here's an example of the simplest file upload component.
 
