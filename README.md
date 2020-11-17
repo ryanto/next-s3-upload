@@ -33,15 +33,15 @@ In the next sections we'll go over how to generate these values.
 
 ### S3 bucket
 
-Create a new S3 bucket and store the name of the bucket as `S3_UPLOAD_BUCKET` and its region as `S3_UPLOAD_REGION`.
+Create a new S3 bucket and store the name of the bucket as `S3_UPLOAD_BUCKET` and its region as `S3_UPLOAD_REGION` in your `.env.local` file.
 
 #### Bucket permissions
 
-Once the bucket is created you'll need to go to the permissions tab and make sure that block access is not blocked.
+Once the bucket is created you'll need to go to the permissions tab and make sure that public access is not blocked.
 
 ![Bucket public access](https://user-images.githubusercontent.com/89411/99440530-b472a980-28e4-11eb-96e0-9c99005b65ee.png)
 
-You'll also need to add the following JSON permissions in the CORS section.
+You'll also need to add the following permissions in the CORS section.
 
 ```json
 [
@@ -53,6 +53,8 @@ You'll also need to add the following JSON permissions in the CORS section.
   }
 ]
 ```
+
+Here's what the CORS permissions will look like once you paste in the above JSON.
 
 ![Bucket cors](https://user-images.githubusercontent.com/89411/99424402-9ea6b980-28cf-11eb-8915-3a2001367ec8.png)
 
@@ -90,7 +92,7 @@ When the policy editor opens, click on the _JSON_ tab and paste in the following
 }
 ```
 
-**Important**: Before saving the policy, you'll need to replace:
+🚨 **Important** 🚨 Before saving the policy, you'll need to replace:
 
 |                 |                                                                                                                          |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------ |
@@ -105,7 +107,7 @@ Now go back to the tab where you were adding a user. Search for the policy you c
 
 Select the policy and continue creating the user. You can just click through the next steps, there's no more configuration.
 
-Once the user is created you'll see screen with their API keys. Copy these keys to `.env.local` as `S3_UPLOAD_KEY` and `S3_UPLOAD_SECRET`.
+Once the user is created you'll see a screen with their API keys. Copy these keys to `.env.local` as `S3_UPLOAD_KEY` and `S3_UPLOAD_SECRET`.
 
 ![API keys](https://user-images.githubusercontent.com/89411/99429536-25f72b80-28d6-11eb-931a-e88b633be057.png)
 
@@ -142,11 +144,11 @@ export default function UploadTest() {
 
 The `useS3Upload` hook returns three items needed to coordinate the upload.
 
-|                    |                                                                                                                                          |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `FileInput`        | This is a component that renders a _hidden_ file input. It needs to be rendered on the page in order to coordinate file access.          |
-| `openFileDialog`   | This is a function that opens the browser's select a file dialog. Once a file is selected the `FileInput`'s `onChange` action will fire. |
-| `uploadToS3(file)` | This is a function that will upload a `File` to your S3 bucket.                                                                          |
+|                    |                                                                                                                                  |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| `FileInput`        | A component that renders a hidden file input. It needs to be rendered on the page in order to coordinate file access.            |
+| `openFileDialog`   | A function that opens the browser's select a file dialog. Once a file is selected the `FileInput`'s `onChange` action will fire. |
+| `uploadToS3(file)` | A function that will upload a `File` to your S3 bucket.                                                                          |
 
 ### Using next/image
 
