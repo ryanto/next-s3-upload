@@ -111,7 +111,18 @@ Once the user is created you'll see a screen with their API keys. Copy these key
 
 ![API keys](https://user-images.githubusercontent.com/89411/99429536-25f72b80-28d6-11eb-931a-e88b633be057.png)
 
-That's it! We're done configuring S3 for uploads.
+That's it! We're done configuring AWS for uploads.
+
+### API Route
+
+In order for our Next app to securely communicate with S3 we'll need to create an API route for `pages/api/s3-upload.js`.
+
+```js
+// pages/api/s3-upload.js
+export { APIRoute as default } from 'next-s3-upload';
+```
+
+That's it!
 
 ## Usage
 
