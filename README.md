@@ -122,6 +122,8 @@ In order for our Next app to securely communicate with S3 we'll need to create a
 export { APIRoute as default } from 'next-s3-upload';
 ```
 
+That's it. This package's `APIRoute` takes care of all the coordination with S3.
+
 ## Usage
 
 This package provides a `useS3Upload` hook that gives you all of the pieces needed to coordinate an upload from your application to S3.
