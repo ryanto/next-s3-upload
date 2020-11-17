@@ -167,7 +167,7 @@ The `useS3Upload` hook returns three items needed to coordinate the upload.
 
 In order to take advantage of [next/image](https://nextjs.org/docs/api-reference/next/image) we'll need to know the image's height and width. For images uploaded by users it's best to capture these dimensions during the upload process.
 
-This package ships with a helper that lets you get the height and width from image files. Here's an example of its usage.
+This package ships with a `getImageData` helper that lets you get the height and width from image files. Here's an example of its usage.
 
 ```jsx
 import { useState } from 'react';
@@ -208,7 +208,7 @@ export default function UploadTest() {
 }
 ```
 
-The `getImageData` is an async function that returns the height and width of the image. This data can be saved to your database alongside the URL of the image.
+These height and width values can be saved to your database alongside the URL of the image.
 
 ## Help and questions
 
