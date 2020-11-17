@@ -4,7 +4,7 @@ The goal of this package is to make it as easy as possible to upload files from 
 
 ## Installation
 
-```text
+```bash
 npm install next-s3-upload
 
 # or
@@ -122,9 +122,9 @@ In order for our Next app to securely communicate with S3 we'll need to create a
 export { APIRoute as default } from 'next-s3-upload';
 ```
 
-That's it!
-
 ## Usage
+
+This package gives you a `useS3Upload` hook that gives you all of the pieces you need to coordinate an upload from your application to S3.
 
 Here's an example of the simplest file upload component.
 
