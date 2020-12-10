@@ -165,9 +165,21 @@ The `useS3Upload` hook returns three items needed to coordinate the upload.
 
 ### Using next/image
 
-In order to take advantage of [next/image](https://nextjs.org/docs/api-reference/next/image) we'll need to know the image's height and width. For images uploaded by users it's best to capture these dimensions during the upload process.
+Before we can use [next/image](https://nextjs.org/docs/api-reference/next/image), we'll need to configure our app to allow images sourced from our S3 bucket. We can do this by editing our `next.config.js`.
 
-This package ships with a `getImageData` helper that lets you get the height and width from image files. Here's an example of its usage.
+```js
+// next.config.js
+
+module.exports = {
+  images: {
+    domains: [`${process.env.S3_UPLOAD_BUCKET}.s3.amazonaws.com`],
+  },
+};
+```
+
+Next, we'll need to find the height and width of uploaded images. It's best to capture these dimensions during the upload process.
+
+This package ships with a `getImageData` helper that gives you the height and width of an image file. Here's an example of its usage.
 
 ```jsx
 import { useState } from 'react';
