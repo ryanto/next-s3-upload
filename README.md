@@ -2,6 +2,9 @@
 
 The goal of this package is to make it as easy as possible to upload files from a Next.js app to S3.
 
+* [Installation](#installation)
+* [Usage](#usage)
+
 ## Installation
 
 ```bash
