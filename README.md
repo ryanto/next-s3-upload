@@ -50,16 +50,16 @@ You'll also need to add the following permissions in the CORS section.
 [
   {
     "AllowedHeaders": ["*"],
-    "AllowedMethods": ["PUT"],
+    "AllowedMethods": ["PUT", "POST"],
     "AllowedOrigins": ["*"],
-    "ExposeHeaders": []
+    "ExposeHeaders": ["ETag"]
   }
 ]
 ```
 
 Here's what the CORS permissions will look like once you paste in the above JSON.
 
-![Bucket cors](https://user-images.githubusercontent.com/89411/99424402-9ea6b980-28cf-11eb-8915-3a2001367ec8.png)
+![Bucket cors](https://user-images.githubusercontent.com/2922250/110516113-27dc3900-80d7-11eb-9352-31626e525402.png)
 
 These settings are required so users can upload files to your bucket.
 
