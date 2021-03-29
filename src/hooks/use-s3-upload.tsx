@@ -63,60 +63,65 @@ export const useS3Upload = () => {
     let res = await fetch(`/api/s3-upload?filename=${filename}`);
     let data = await res.json();
 
-    let s3 = new S3({
-      accessKeyId: data.token.Credentials.AccessKeyId,
-      secretAccessKey: data.token.Credentials.SecretAccessKey,
-      sessionToken: data.token.Credentials.SessionToken,
-    });
+    if (data.error) {
+      console.error(data.error);
+      throw data.error;
+    } else {
+      let s3 = new S3({
+        accessKeyId: data.token.Credentials.AccessKeyId,
+        secretAccessKey: data.token.Credentials.SecretAccessKey,
+        sessionToken: data.token.Credentials.SessionToken,
+      });
 
-    let blob = await getFileContents(file);
+      let blob = await getFileContents(file);
 
-    let params = {
-      ACL: 'public-read',
-      Bucket: data.bucket,
-      Key: data.key,
-      Body: blob,
-      CacheControl: 'max-age=630720000, public',
-      ContentType: file.type,
-    };
+      let params = {
+        ACL: 'public-read',
+        Bucket: data.bucket,
+        Key: data.key,
+        Body: blob,
+        CacheControl: 'max-age=630720000, public',
+        ContentType: file.type,
+      };
 
-    // at some point make this configurable
-    // let uploadOptions = {
-    //   partSize: 100 * 1024 * 1024,
-    //   queueSize: 1,
-    // };
+      // at some point make this configurable
+      // let uploadOptions = {
+      //   partSize: 100 * 1024 * 1024,
+      //   queueSize: 1,
+      // };
 
-    let s3Upload = s3.upload(params);
+      let s3Upload = s3.upload(params);
 
-    setFiles(files => [
-      ...files,
-      { file, progress: 0, uploaded: 0, size: file.size },
-    ]);
+      setFiles(files => [
+        ...files,
+        { file, progress: 0, uploaded: 0, size: file.size },
+      ]);
 
-    s3Upload.on('httpUploadProgress', event => {
-      if (event.total) {
-        setFiles(files =>
-          files.map(trackedFile =>
-            trackedFile.file === file
-              ? {
-                  file,
-                  uploaded: event.loaded,
-                  size: event.total,
-                  progress: (event.loaded / event.total) * 100,
-                }
-              : trackedFile
-          )
-        );
-      }
-    });
+      s3Upload.on('httpUploadProgress', event => {
+        if (event.total) {
+          setFiles(files =>
+            files.map(trackedFile =>
+              trackedFile.file === file
+                ? {
+                    file,
+                    uploaded: event.loaded,
+                    size: event.total,
+                    progress: (event.loaded / event.total) * 100,
+                  }
+                : trackedFile
+            )
+          );
+        }
+      });
 
-    let uploadResult = await s3Upload.promise();
+      let uploadResult = await s3Upload.promise();
 
-    return {
-      url: uploadResult.Location,
-      bucket: uploadResult.Bucket,
-      key: uploadResult.Key,
-    };
+      return {
+        url: uploadResult.Location,
+        bucket: uploadResult.Bucket,
+        key: uploadResult.Key,
+      };
+    }
   };
 
   return {
