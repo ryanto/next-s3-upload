@@ -2,8 +2,8 @@
 
 The goal of this package is to make it as easy as possible to upload files from a Next.js app to S3.
 
-* [Installation](#installation)
-* [Usage](#usage)
+- [Installation](#installation)
+- [Usage](#usage)
 
 ## Installation
 
@@ -224,6 +224,23 @@ export default function UploadTest() {
 ```
 
 These height and width values can be saved to your database alongside the URL of the image.
+
+### Configuring uploads
+
+By default this addon will give every upload a unique key in your S3 bucket. If you would like to customize the key you can do so by configuring the APIRoute.
+
+```js
+// pages/api/s3-upload.js
+import { APIRoute } from 'next-s3-upload';
+
+export default APIRoute.configure({
+  key(req, filename) {
+    return `my/uploads/path/${filename.toUpperCase()}`;
+  },
+});
+```
+
+The signature for the key function is: `(req: NextApiRequest, filename: string) => string`
 
 ## Help and questions
 
