@@ -1,6 +1,4 @@
-import React, { ChangeEvent } from 'react';
-import { useRef, useState } from 'react';
-import { forwardRef } from 'react';
+import React, { ChangeEvent, useRef, useState, forwardRef } from 'react';
 import S3 from 'aws-sdk/clients/s3';
 
 type FileInputProps = {
@@ -58,9 +56,15 @@ export const useS3Upload = () => {
     }
   };
 
-  let uploadToS3 = async (file: File) => {
+  let uploadToS3 = async (file: File, additionalData: object = {}) => {
     let filename = encodeURIComponent(file.name);
-    let res = await fetch(`/api/s3-upload?filename=${filename}`);
+    let res = await fetch(`/api/s3-upload`, {
+      method: 'POST',
+      body: JSON.stringify({
+        filename,
+        ...additionalData,
+      }),
+    });
     let data = await res.json();
 
     if (data.error) {

@@ -234,13 +234,13 @@ By default this addon will give every upload a unique key in your S3 bucket. If 
 import { APIRoute } from 'next-s3-upload';
 
 export default APIRoute.configure({
-  key(req, filename) {
-    return `my/uploads/path/${filename.toUpperCase()}`;
+  key(req, filename, additionalData) {
+    return `my/uploads/path/${additionalData.value}/${filename.toUpperCase()}`;
   },
 });
 ```
 
-The signature for the key function is: `(req: NextApiRequest, filename: string) => string`
+The signature for the key function is: `(req: NextApiRequest, filename: string, additionalData?: object) => string`
 
 ## Help and questions
 
