@@ -71,6 +71,7 @@ export const useS3Upload = () => {
         accessKeyId: data.token.Credentials.AccessKeyId,
         secretAccessKey: data.token.Credentials.SecretAccessKey,
         sessionToken: data.token.Credentials.SessionToken,
+        region: data.region
       });
 
       let blob = await getFileContents(file);
