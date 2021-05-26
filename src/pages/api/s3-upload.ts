@@ -58,7 +58,12 @@ let makeRouteHandler = (options: Options = {}): Handler => {
 
       res.statusCode = 200;
 
-      res.status(200).json({ token, key, bucket, region: process.env.S3_UPLOAD_REGION });
+      res.status(200).json({
+        token,
+        key,
+        bucket,
+        region: process.env.S3_UPLOAD_REGION,
+      });
     }
   };
 
