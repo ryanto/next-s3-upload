@@ -242,6 +242,43 @@ export default APIRoute.configure({
 
 The signature for the key function is: `(req: NextApiRequest, filename: string) => string`
 
+### Multiple uploads
+
+To support multiple file uploads in your project, you can wire up your own `<input type="file">` and then you can loop over all the selected files and call `uploadToS3` on each of them.
+
+```js
+import { useState } from 'react';
+import { useS3Upload } from 'next-s3-upload';
+
+export default function UploadImages() {
+  const [isUploadComplete, setIsUploadComplete] = useState(false);
+  const { uploadToS3 } = useS3Upload();
+
+  const handleFilesChange = async ({ target }) => {
+    const urls = []
+    const files = Array.from(target.files)
+
+    for (let index = 0; index < files.length; index++) {
+      const file = files[index]
+      const { url } = await uploadToS3(file)
+      urls.push(url)
+    }
+    setIsUploadComplete(true)
+    // You can do whatever you want to do with your uploaded files {urls}
+  };
+
+  return (
+    <div>
+      <input type="file" name="file" multiple onChange={handleFilesChange} />
+      <br />
+      {isUploadComplete && 'Done Uploading files to S3'}
+    </div>
+  );
+}
+
+```
+
+
 ## Help and questions
 
 This is a new project and I'd love to hear about your experience using it! If you run into any trouble or have any suggestions please open an [issue](https://github.com/ryanto/next-s3-upload/issues) or contact me on [Twitter](https://twitter.com/ryantotweets).
