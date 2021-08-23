@@ -11,7 +11,7 @@ type Configure = (options: Options) => Handler;
 type Handler = NextRouteHandler & { configure: Configure };
 
 type Options = {
-  key?: (req: NextApiRequest, filename: string) => string;
+  key?: (req: NextApiRequest, filename: string) => string | Promise<string>;
 };
 
 let makeRouteHandler = (options: Options = {}): Handler => {
@@ -32,7 +32,7 @@ let makeRouteHandler = (options: Options = {}): Handler => {
 
       let filename = req.query.filename as string;
       let key = options.key
-        ? options.key(req, filename)
+        ? await Promise.resolve(options.key(req, filename))
         : `next-s3-uploads/${uuidv4()}/${filename.replace(/\s/g, '-')}`;
 
       let policy = {

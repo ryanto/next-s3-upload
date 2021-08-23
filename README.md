@@ -242,7 +242,7 @@ export default APIRoute.configure({
 });
 ```
 
-The signature for the key function is: `(req: NextApiRequest, filename: string) => string`
+The signature for the key function is: `(req: NextApiRequest, filename: string) => string | Promise<string>`
 
 ### Multiple uploads
 
