@@ -89,7 +89,14 @@ When the policy editor opens, click on the _JSON_ tab and paste in the following
       "Sid": "S3UploadAssets",
       "Effect": "Allow",
       "Action": "s3:*",
-      "Resource": ["arn:aws:s3:::BUCKET_NAME", "arn:aws:s3:::BUCKET_NAME/*"]
+      "Resource": [
+        "arn:aws:s3:::BUCKET_NAME",
+        "arn:aws:s3:::BUCKET_NAME/*.jpg",
+        "arn:aws:s3:::BUCKET_NAME/*.png",
+        "arn:aws:s3:::BUCKET_NAME/*.gif",
+        "==== ADD OTHER FORMATS HERE ====",
+        "arn:aws:s3:::BUCKET_NAME/*.format"
+      ]
     }
   ]
 }
@@ -101,6 +108,14 @@ When the policy editor opens, click on the _JSON_ tab and paste in the following
 | --------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | **ACCOUNT_ID**  | Your AWS account ID. You can get this number by clicking on your name in the header. It's the number next to My account. |
 | **BUCKET_NAME** | The name of the bucket you created in the previous step.                                                                 |
+
+#### Allowed file formats
+
+In the above example we only allow `jpg`, `png`, and `gif` files to be uploaded. If you're planning to use `next/image` with files uploaded to S3 you'll want to make sure that only images are allowed to be uploaded. See [this issue](https://github.com/ryanto/next-s3-upload/issues/19) for more information.
+
+If you're not using `next/image`, you can edit the above example and add additional file formats. For example, you can add `arn:aws:s3:::BUCKET_NAME/*` to allow any file to be uploaded.
+
+#### IAM user cont.
 
 Next, click review policy, and name the policy `next-s3-upload`. The name doesn't matter, so feel free to use anything you'd like. Follow any prompts and create the policy.
 
@@ -176,6 +191,7 @@ Before we can use [next/image](https://nextjs.org/docs/api-reference/next/image)
 module.exports = {
   images: {
     domains: [
+      `${process.env.S3_UPLOAD_BUCKET}.s3.amazonaws.com`,
       `${process.env.S3_UPLOAD_BUCKET}.s3.${process.env.S3_UPLOAD_REGION}.amazonaws.com`,
     ],
   },
@@ -257,15 +273,15 @@ export default function UploadImages() {
   const { uploadToS3 } = useS3Upload();
 
   const handleFilesChange = async ({ target }) => {
-    const urls = []
-    const files = Array.from(target.files)
+    const urls = [];
+    const files = Array.from(target.files);
 
     for (let index = 0; index < files.length; index++) {
-      const file = files[index]
-      const { url } = await uploadToS3(file)
-      urls.push(url)
+      const file = files[index];
+      const { url } = await uploadToS3(file);
+      urls.push(url);
     }
-    setIsUploadComplete(true)
+    setIsUploadComplete(true);
     // You can do whatever you want to do with your uploaded files {urls}
   };
 
@@ -277,9 +293,7 @@ export default function UploadImages() {
     </div>
   );
 }
-
 ```
-
 
 ## Help and questions
 
