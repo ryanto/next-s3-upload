@@ -29,17 +29,6 @@ let FileInput = forwardRef<HTMLInputElement, FileInputProps>(
   }
 );
 
-let getFileContents = (file: File): Promise<any> => {
-  return new Promise(resolve => {
-    let reader = new FileReader();
-    reader.onload = readEvent => {
-      resolve(readEvent.target?.result);
-    };
-
-    reader.readAsArrayBuffer(file);
-  });
-};
-
 type TrackedFile = {
   file: File;
   progress: number;
@@ -74,13 +63,11 @@ export const useS3Upload = () => {
         region: data.region,
       });
 
-      let blob = await getFileContents(file);
-
       let params = {
         ACL: 'public-read',
         Bucket: data.bucket,
         Key: data.key,
-        Body: blob,
+        Body: file,
         CacheControl: 'max-age=630720000, public',
         ContentType: file.type,
       };
