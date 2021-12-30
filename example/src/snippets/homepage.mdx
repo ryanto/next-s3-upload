@@ -1,0 +1,22 @@
+```jsx{8}
+// pages/upload.js
+
+import { useS3Upload } from 'next-s3-upload';
+
+export default function UploadTest() {
+  let { FileInput, openFileDialog, uploadToS3 } = useS3Upload();
+
+  let handleFileChange = async file => {
+    let { url } = await uploadToS3(file);
+    console.log('Successfully uploaded to S3!', url);
+  };
+
+  return (
+    <div>
+      <FileInput onChange={handleFileChange} />
+
+      <button onClick={openFileDialog}>Upload file</button>
+    </div>
+  );
+}
+```

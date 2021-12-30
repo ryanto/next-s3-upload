@@ -1,0 +1,40 @@
+.token.tag,
+.token.class-name,
+.token.selector,
+.token.selector .class,
+.token.function {
+  @apply text-purple-400;
+}
+
+.token.attr-name,
+.token.keyword,
+.token.rule,
+.token.operator,
+.token.pseudo-class,
+.token.important {
+  @apply text-sky-400;
+}
+
+.token.attr-value,
+.token.class,
+.token.string,
+.token.number,
+.token.unit,
+.token.color {
+  @apply text-green-300;
+}
+
+.token.punctuation,
+.token.module,
+.token.property {
+  @apply text-cyan-300;
+}
+
+/* used from install */
+.language-shell .token:not(.comment) {
+  color: inherit;
+}
+
+.token.comment {
+  @apply text-gray-400;
+}

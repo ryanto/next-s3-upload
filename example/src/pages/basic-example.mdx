@@ -1,0 +1,42 @@
+# Basic example
+
+This package provides a `useS3Upload` hook that gives you all of the pieces needed to coordinate an upload from your application to S3.
+
+Here's an example of the simplest file upload component.
+
+```jsx
+import { useState } from 'react';
+import { useS3Upload } from 'next-s3-upload';
+
+export default function UploadTest() {
+  let [imageUrl, setImageUrl] = useState();
+  let { FileInput, openFileDialog, uploadToS3 } = useS3Upload();
+
+  let handleFileChange = async file => {
+    let { url } = await uploadToS3(file);
+    setImageUrl(url);
+  };
+
+  return (
+    <div>
+      <FileInput onChange={handleFileChange} />
+
+      <button onClick={openFileDialog}>Upload file</button>
+
+      {imageUrl && <img src={imageUrl} />}
+    </div>
+  );
+}
+```
+
+## How it works
+
+This example renders a page with a single button labeled "Upload file".
+
+When the button is clicked the browser will open a file selection dialog. Once the user selects a file the `handleFileChange` function will fire and begin uploading the file to S3.
+
+The `uploadToS3` function will return an object containing a URL to the file once the upload successfully finishes.
+
+## Things to note
+
+The `<FileInput>` renders a hidden file input tag that coordinates uploading the file. This library gives you `<FileInput>` because wiring up file inputs for uploading in React contains a bit of additional boilerplate code. Using this component will save you of time, but you can always [use your own file input](/custom-file-input) if you'd like.
