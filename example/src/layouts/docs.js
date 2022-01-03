@@ -10,7 +10,7 @@ export default function({ children }) {
       </Head>
       <div className="flex">
         <div className="w-56">
-          <h6 className="text-sm font-semibold text-gray-700">
+          <h6 className="text-sm font-semibold text-gray-900">
             Getting started
           </h6>
           <ul>
@@ -28,57 +28,45 @@ export default function({ children }) {
           <h6 className="text-sm font-semibold text-gray-900 mt-8">
             Uploading files
           </h6>
-          <ul className="">
+          <ul>
             <li className="mt-1 pt-1 border-l border-gray-200">
               <DocLink href="/basic-example">Basic example</DocLink>
             </li>
             <li className="pt-1 border-l border-gray-200">
               <DocLink href="/next-image">Using next/image</DocLink>
             </li>
-            <li className="pt-1 border-l border-gray-200">
+            {/* <li className="pt-1 border-l border-gray-200">
               <DocLink href="/tracking-progress">Tracking progress</DocLink>
-            </li>
+            </li> */}
             <li className="pt-1 border-l border-gray-200">
-              <DocLink href="/multi-file-uploads">Multi file uploads</DocLink>
+              <DocLink href="/multi-file-uploads">Multiple files</DocLink>
             </li>
-            <li className="pt-1 pb-1 border-l border-gray-200">
+            {/* <li className="pt-1 pb-1 border-l border-gray-200">
               <DocLink href="/custom-file-input">Custom file input</DocLink>
-            </li>
+            </li> */}
           </ul>
-          <h6 className="text-sm font-semibold text-gray-700 mt-8">
+          <h6 className="text-sm font-semibold text-gray-900 mt-8">
             S3 configuration
           </h6>
           <ul>
-            <li className="mt-1">
-              <Link href="/setup">
-                <a className="text-gray-600 hover:text-gray-700 hover:underline">
-                  File paths
-                </a>
-              </Link>
+            <li className="mt-1 pt-1 pb-1 border-l border-gray-200">
+              <DocLink href="/s3-file-paths">File paths</DocLink>
             </li>
           </ul>
-          <h6 className="text-sm font-semibold text-gray-700 mt-8">
+          <h6 className="text-sm font-semibold text-gray-900 mt-8">
             React API
           </h6>
           <ul>
-            <li className="mt-1">
-              <Link href="/setup">
-                <a className="text-gray-600 hover:text-gray-700 hover:underline">
-                  useS3Upload
-                </a>
-              </Link>
+            <li className="mt-1 pt-1 pb-1 border-l border-gray-200">
+              <DocLink href="/use-s3-upload">useS3Upload</DocLink>
             </li>
           </ul>
-          <h6 className="text-sm font-semibold text-gray-700 mt-8">
+          <h6 className="text-sm font-semibold text-gray-900 mt-8">
             Help & support
           </h6>
           <ul>
-            <li className="mt-1">
-              <Link href="/setup">
-                <a className="text-gray-600 hover:text-gray-700 hover:underline">
-                  About
-                </a>
-              </Link>
+            <li className="mt-1 pt-1 pb-1 border-l border-gray-200">
+              <DocLink href="/use-s3-upload">About me</DocLink>
             </li>
           </ul>
         </div>
