@@ -1,9 +1,11 @@
-export const Code = ({ language, html }) => {
+export const Code = ({ language, html, source }) => {
+  let isPage = source === 'page';
+
   return (
-    <div className="overflow-auto">
+    <div className={`overflow-auto ${isPage ? '-mx-4 md:mx-0' : ''}`}>
       <pre className={`language-${language} min-w-full float-left py-6 my-0`}>
         <code
-          className={`language-`}
+          className={`language-${language} !text-white`}
           dangerouslySetInnerHTML={{ __html: html }}
         />
       </pre>

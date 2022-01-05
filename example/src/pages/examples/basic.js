@@ -8,21 +8,33 @@ export default function UploadTest() {
   let handleFileChange = async file => {
     let { url } = await uploadToS3(file);
     setImageUrl(url);
-    console.log('Successfully uploaded to S3!', url);
+
+    let printUrl = url.replace(/^https:\/\//, 'https:‎//');
+
+    console.log(
+      `%cSuccessfully uploaded to S3!`,
+      'background: #15803d; color: white; padding: 8px 12px'
+    );
+    console.log(
+      `%c${printUrl}`,
+      'background: #4f46e5; color: white; padding: 8px 12px'
+    );
   };
 
   return (
-    <div className="py-3 px-4">
+    <div className="p-6 flex flex-col h-screen">
       <FileInput onChange={handleFileChange} />
-
-      <button
-        className="bg-indigo-600 text-white rounded px-3 py-2 text-base font-medium shadow-sm"
-        onClick={openFileDialog}
-      >
-        Upload file
-      </button>
-
-      {imageUrl && <img src={imageUrl} />}
+      <div>
+        <button
+          className="bg-indigo-600 text-white rounded px-3 py-2 text-base font-medium shadow-sm"
+          onClick={openFileDialog}
+        >
+          Upload file
+        </button>
+      </div>
+      <div className="pt-8 flex-1 overflow-hidden flex">
+        {imageUrl && <img className="object-contain" src={imageUrl} />}
+      </div>
     </div>
   );
 }

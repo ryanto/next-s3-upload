@@ -1,9 +1,7 @@
-```jsx{8}
-// pages/upload.js
-
+```jsx
 import { useS3Upload } from 'next-s3-upload';
 
-export default function UploadTest() {
+export default function UploadPage() {
   let { FileInput, openFileDialog, uploadToS3 } = useS3Upload();
 
   let handleFileChange = async file => {
