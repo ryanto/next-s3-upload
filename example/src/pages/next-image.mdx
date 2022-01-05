@@ -1,0 +1,64 @@
+# Using next/image
+
+Before we can use [next/image](https://nextjs.org/docs/api-reference/next/image), we'll need to configure our app to allow images sourced from our S3 bucket. We can do this by editing our `next.config.js`.
+
+```js
+// next.config.js
+
+module.exports = {
+  images: {
+    domains: [`${process.env.S3_UPLOAD_BUCKET}.s3.amazonaws.com`],
+  },
+};
+```
+
+Next, we'll need to find the height and width of uploaded images. It's best to capture these dimensions during the upload process.
+
+This package ships with a `getImageData` helper that gives you the height and width of an image file. Here's an example of its usage.
+
+```jsx
+import { useState } from 'react';
+import { useS3Upload, getImageData } from 'next-s3-upload';
+import Image from 'next/image';
+
+export default function UploadTest() {
+  let [imageUrl, setImageUrl] = useState();
+  let [height, setHeight] = useState();
+  let [width, setWidth] = useState();
+  let { FileInput, openFileDialog, uploadToS3 } = useS3Upload();
+
+  let handleFileChange = async file => {
+    let { url } = await uploadToS3(file);
+    let { height, width } = await getImageData(file);
+    setWidth(width);
+    setHeight(height);
+    setImageUrl(url);
+  };
+
+  return (
+    <div>
+      <FileInput onChange={handleFileChange} />
+
+      <button onClick={openFileDialog}>Upload file</button>
+
+      {imageUrl && (
+        <div>
+          <Image src={imageUrl} width={width} height={height} />
+          <div>{imageUrl}</div>
+          <div>
+            {height}x{width}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+These height and width values can be saved to your database alongside the URL of the image.
+
+## Things to know
+
+When using `next/image` with files uploaded to S3 you'll want to be sure that your bucket policy only allows images to be uploaded, otherwise you could create a possible [XSS vector](https://github.com/ryanto/next-s3-upload/issues/19).
+
+The [getting started](/setup#IAM%20User) guide shows you how to setup a policy that only allows image files to be uploaded.
