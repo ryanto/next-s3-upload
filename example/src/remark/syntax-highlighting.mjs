@@ -3,7 +3,7 @@ import { addImport } from './helpers.js';
 import { highlightCode } from '../lib/highlight.js';
 import { is } from 'vfile-is';
 
-export const withSyntaxHighlighting = () => {
+export const syntaxHighlighting = () => {
   return (tree, file) => {
     let Code = addImport(tree, '@/components/code', 'Code');
     let isPage = is(file, '**/pages/**/*.mdx');

@@ -2,7 +2,7 @@ import find from 'unist-util-find';
 import { is } from 'vfile-is';
 import { addDefaultImport } from './helpers.js';
 
-export const withLayout = () => {
+export const layout = () => {
   return (tree, file) => {
     let isSnippet = is(file, '**/snippets/**/*.mdx');
     let hasDefaultExport = find(tree, { type: 'export', default: true });

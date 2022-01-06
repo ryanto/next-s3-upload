@@ -1,6 +1,9 @@
 import nextMdx from '@next/mdx';
-import { withSyntaxHighlighting } from './src/remark/with-syntax-highlighting.mjs';
-import { withLayout } from './src/remark/with-layout.mjs';
+import { syntaxHighlighting } from './src/remark/syntax-highlighting.mjs';
+import { layout } from './src/remark/layout.mjs';
+import { images } from './src/remark/images.mjs';
+import { links } from './src/remark/links.mjs';
+import { toc } from './src/remark/toc.mjs';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -8,7 +11,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 let withMDX = nextMdx({
   options: {
-    remarkPlugins: [withSyntaxHighlighting, withLayout],
+    remarkPlugins: [toc, syntaxHighlighting, images, links, layout],
   },
 });
 

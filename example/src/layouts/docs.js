@@ -1,16 +1,16 @@
-import { CloudUploadIcon } from '@heroicons/react/outline';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 export default function({ children, tableOfContents }) {
+  console.log({ tableOfContents });
   return (
     <div className="flex flex-col max-w-screen-xl mx-auto">
       <Head>
         <title>Next S3 Upload</title>
       </Head>
       <div className="mx-auto px-4 mt-10 md:px-0 w-full md:w-[65ch] lg:w-[calc(14rem+65ch)] xl:w-[calc(14rem+14rem+65ch)]">
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <Link href="/">
             <a className="-skew-x-[9deg] -rotate-0 inline-block text-sm sm:text-base px-2 sm:px-4 text-white font-semibold py-1.5 sm:py-2.5 rounded bg-gradient-to-r from-purple-600 to-sky-600">
               <span className="skew-x-[9deg] rotate-0 flex justify-center items-center px-1 py-1">
@@ -24,13 +24,13 @@ export default function({ children, tableOfContents }) {
           </a>
         </div>
       </div>
-      <div className="flex px-4 mx-auto md:px-0 max-w-screen-xl mt-14">
-        <div className="w-56 hidden lg:block">
+      <div className="flex max-w-screen-xl px-4 mx-auto md:px-0 mt-14">
+        <div className="hidden w-56 lg:block">
           <h6 className="text-sm font-semibold text-gray-900">
             Getting started
           </h6>
           <ul>
-            <li className="mt-1 pt-1 pb-1 border-l border-gray-200">
+            <li className="pt-1 pb-1 mt-1 border-l border-gray-200">
               <DocLink href="/setup">Setup</DocLink>
             </li>
             {/* <li className="mt-1">
@@ -41,11 +41,11 @@ export default function({ children, tableOfContents }) {
               </Link>
             </li> */}
           </ul>
-          <h6 className="text-sm font-semibold text-gray-900 mt-8">
+          <h6 className="mt-8 text-sm font-semibold text-gray-900">
             Uploading files
           </h6>
           <ul>
-            <li className="mt-1 pt-1 border-l border-gray-200">
+            <li className="pt-1 mt-1 border-l border-gray-200">
               <DocLink href="/basic-example">Basic example</DocLink>
             </li>
             <li className="pt-1 border-l border-gray-200">
@@ -57,47 +57,47 @@ export default function({ children, tableOfContents }) {
             <li className="pt-1 border-l border-gray-200">
               <DocLink href="/multi-file-uploads">Multiple files</DocLink>
             </li>
-            {/* <li className="pt-1 pb-1 border-l border-gray-200">
+            <li className="pt-1 pb-1 border-l border-gray-200">
               <DocLink href="/custom-file-input">Custom file input</DocLink>
-            </li> */}
+            </li>
           </ul>
-          <h6 className="text-sm font-semibold text-gray-900 mt-8">
+          <h6 className="mt-8 text-sm font-semibold text-gray-900">
             S3 configuration
           </h6>
           <ul>
-            <li className="mt-1 pt-1 pb-1 border-l border-gray-200">
+            <li className="pt-1 pb-1 mt-1 border-l border-gray-200">
               <DocLink href="/s3-file-paths">File paths</DocLink>
             </li>
             {/* <li className="pt-1 pb-1 border-l border-gray-200">
               <DocLink href="/custom-file-input">Deleting files</DocLink>
             </li> */}
           </ul>
-          <h6 className="text-sm font-semibold text-gray-900 mt-8">
+          <h6 className="mt-8 text-sm font-semibold text-gray-900">
             React API
           </h6>
           <ul>
-            <li className="mt-1 pt-1 pb-1 border-l border-gray-200">
+            <li className="pt-1 pb-1 mt-1 border-l border-gray-200">
               <DocLink href="/use-s3-upload">useS3Upload</DocLink>
             </li>
           </ul>
-          <h6 className="text-sm font-semibold text-gray-900 mt-8">
+          <h6 className="mt-8 text-sm font-semibold text-gray-900">
             Help & support
           </h6>
           <ul>
-            {/* <li className="mt-1 pt-1 pb-1 border-l border-gray-200">
+            {/* <li className="pt-1 pb-1 mt-1 border-l border-gray-200">
               <DocLink href="/use-s3-upload">About me</DocLink>
             </li> */}
-            <li className="mt-1 pt-1 pb-1 border-l border-gray-200">
+            <li className="pt-1 pb-1 mt-1 border-l border-gray-200">
               <DocLink href="https://github.com/ryanto/next-s3-upload/issues">
                 Github issues
               </DocLink>
             </li>
           </ul>
         </div>
-        <div className="grow prose prose-pre:rounded-none md:prose-pre:rounded prose-code:text-purple-600 mb-32 max-w-[calc(100vw-2rem)] md:max-w-prose mx-auto lg:mx-0">
+        <div className="grow prose prose-pre:rounded-none md:prose-pre:rounded prose-code:text-purple-600 mb-32 md:min-w-[65ch] max-w-[calc(100vw-2rem)] md:max-w-prose mx-auto lg:mx-0">
           {children}
         </div>
-        <div className="pl-12 hidden xl:block text-xs w-56">
+        <div className="hidden w-56 pl-12 text-xs xl:block">
           <div className="font-semibold uppercase">On this page</div>
         </div>
       </div>
