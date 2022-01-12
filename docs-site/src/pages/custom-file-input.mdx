@@ -1,0 +1,28 @@
+# Custom file input
+
+This addon ships with a pre-wired `<FileInput />` component, but you can always bring your own file input.
+
+Here's how to use a native file input.
+
+```jsx
+import { useState } from 'react';
+import { useS3Upload } from 'next-s3-upload';
+
+export default function UploadTest() {
+  let [imageUrl, setImageUrl] = useState();
+  let { uploadToS3 } = useS3Upload();
+
+  let handleFileChange = async file => {
+    let { url } = await uploadToS3(file);
+    setImageUrl(url);
+  };
+
+  return (
+    <div>
+      <input type="file" onChange={handleFileChange} />
+
+      {imageUrl && <img src={imageUrl} />}
+    </div>
+  );
+}
+```

@@ -1,0 +1,30 @@
+# S3 file paths
+
+By default this addon will give every upload a unique key in your S3 bucket. If you would like to customize the key you can do so by configuring the APIRoute.
+
+```js
+// pages/api/s3-upload.js
+import { APIRoute } from 'next-s3-upload';
+
+export default APIRoute.configure({
+  key(req, filename) {
+    return `my/uploads/path/${filename.toUpperCase()}`;
+  },
+});
+```
+
+The key function can return a promise if you need to do something async to find the key.
+
+```js
+// pages/api/s3-upload.js
+import { APIRoute } from 'next-s3-upload';
+
+export default APIRoute.configure({
+  async key(req, filename) {
+    const user = await currentUser(req);
+    return `users/${user.id}/${filename}`;
+  },
+});
+```
+
+The signature for the key function is: `(req: NextApiRequest, filename: string) => string | Promise<string>`.

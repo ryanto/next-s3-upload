@@ -1,0 +1,47 @@
+# Multiple file uploads
+
+To support multiple file uploads in your project create a new file input with the `multiple` attribute.
+
+Now when the user selects a list of files you'll be able to loop over each file, passing it to the `uploadToS3` function.
+
+```jsx
+import { useState } from 'react';
+import { useS3Upload } from 'next-s3-upload';
+
+export default function UploadImages() {
+  const [urls, setUrls] = useState([]);
+  const { uploadToS3 } = useS3Upload();
+
+  const handleFilesChange = async ({ target }) => {
+    const files = Array.from(target.files);
+
+    for (let index = 0; index < files.length; index++) {
+      const file = files[index];
+      const { url } = await uploadToS3(file);
+
+      setUrls(current => [...current, url]);
+    }
+  };
+
+  return (
+    <div>
+      <input
+        type="file"
+        name="file"
+        multiple="multiple"
+        onChange={handleFilesChange}
+      />
+
+      <div>
+        {urls.map((url, index) => (
+          <div key={url}>
+            File {index}: ${url}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+In this example we create a `urls` array to keep track of all the uploaded files.
