@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 export default function({ children, tableOfContents }) {
-  console.log({ tableOfContents });
   return (
     <div className="flex flex-col max-w-screen-xl mx-auto">
       <Head>
@@ -25,7 +24,7 @@ export default function({ children, tableOfContents }) {
         </div>
       </div>
       <div className="flex max-w-screen-xl px-4 mx-auto md:px-0 mt-14">
-        <div className="hidden w-56 lg:block">
+        <div className="hidden w-56 pr-12 lg:block">
           <h6 className="text-sm font-semibold text-gray-900">
             Getting started
           </h6>
@@ -84,9 +83,6 @@ export default function({ children, tableOfContents }) {
             Help & support
           </h6>
           <ul>
-            {/* <li className="pt-1 pb-1 mt-1 border-l border-gray-200">
-              <DocLink href="/use-s3-upload">About me</DocLink>
-            </li> */}
             <li className="pt-1 pb-1 mt-1 border-l border-gray-200">
               <DocLink href="https://github.com/ryanto/next-s3-upload/issues">
                 Github issues
@@ -99,6 +95,7 @@ export default function({ children, tableOfContents }) {
         </div>
         <div className="hidden w-56 pl-12 text-xs xl:block">
           <div className="font-semibold uppercase">On this page</div>
+          <TOC tableOfContents={tableOfContents} />
         </div>
       </div>
     </div>
@@ -134,6 +131,7 @@ function GithubIcon(props) {
     </svg>
   );
 }
+
 function UploadIcon(props) {
   return (
     <svg
@@ -145,4 +143,26 @@ function UploadIcon(props) {
       <path d="M1374 1004q-8 20-30 20h-192v352q0 14-9 23t-23 9H928q-14 0-23-9t-9-23v-352H704q-14 0-23-9t-9-23q0-12 10-24l319-319q11-9 23-9t23 9l320 320q15 16 7 35zm-350-524q-148 0-273 73T553 751t-73 273 73 273 198 198 273 73 273-73 198-198 73-273-73-273-198-198-273-73zm768 544q0 209-103 385.5T1409.5 1689 1024 1792t-385.5-103T359 1409.5 256 1024t103-385.5T638.5 359 1024 256t385.5 103T1689 638.5t103 385.5z" />
     </svg>
   );
+}
+
+function TOC({ tableOfContents, level = 1 }) {
+  let router = useRouter();
+
+  return tableOfContents.map(({ title, slug, children }) => (
+    <ul key={slug} className={`${level > 2 ? 'pl-2' : ''}`}>
+      <li className="pt-2">
+        <Link href={`${router.pathname}#${slug}`}>
+          <a>{title}</a>
+        </Link>
+      </li>
+
+      {children?.length > 0 ? (
+        <li>
+          <TOC tableOfContents={children} level={level + 1} />
+        </li>
+      ) : (
+        <></>
+      )}
+    </ul>
+  ));
 }
