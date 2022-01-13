@@ -1,6 +1,6 @@
-# S3 file paths
+# File paths
 
-By default this addon will give every upload a unique key in your S3 bucket. If you would like to customize the key you can do so by configuring the APIRoute.
+By default this addon will give every upload a unique key in your S3 bucket. If you would like to customize the key you can do so by configuring the API route.
 
 ```js
 // pages/api/s3-upload.js
@@ -13,7 +13,7 @@ export default APIRoute.configure({
 });
 ```
 
-The key function can return a promise if you need to do something async to find the key.
+The key function can return a promise if you need to do something async.
 
 ```js
 // pages/api/s3-upload.js
@@ -27,4 +27,4 @@ export default APIRoute.configure({
 });
 ```
 
-The signature for the key function is: `(req: NextApiRequest, filename: string) => string | Promise<string>`.
+The signature of the key function is: `(req: NextApiRequest, filename: string) => string | Promise<string>`.

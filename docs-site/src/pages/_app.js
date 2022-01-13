@@ -14,11 +14,15 @@ function MyApp({ Component, pageProps }) {
           content="The easiest way to upload files from your Next.js app to S3.
 "
         />
+        <meta name="twitter:card" content="summary" />
+        <meta
+          name="twitter:image"
+          content="https://next-s3-upload.codingvalue.com/twitter-card-small.png"
+        />
         <meta property="og:title" content="Next S3 Upload" />
         <meta
           property="og:description"
-          content="The easiest way to upload files from your Next.js app to S3.
-"
+          content="The easiest way to upload files from your Next.js app to S3."
         />
         <meta property="og:image" content="/og-image.png" />
       </Head>

@@ -12,7 +12,7 @@ yarn add next-s3-upload
 
 ## Environment variables
 
-We'll need to setup a couple environment variables for this package to work properly.
+You'll need to setup the following environment variables for this package to work correctly.
 
 ```bash
 S3_UPLOAD_KEY=AAAAAAAAAAAAAAAAAAAA
@@ -105,7 +105,7 @@ When the policy editor opens, click on the _JSON_ tab and paste in the following
 
 ### Allowed file formats
 
-In the above example we only allow `jpg`, `png`, and `gif` files to be uploaded. If you're planning to use `next/image` with files uploaded to S3 you'll want to make sure that only images are allowed to be uploaded. See [this issue](https://github.com/ryanto/next-s3-upload/issues/19) for more information.
+The example above only allows `jpg`, `png`, and `gif` files to be uploaded. If you're planning to use `next/image` with files uploaded to S3 you'll want to make sure that only images are allowed to be uploaded. See [this issue](https://github.com/ryanto/next-s3-upload/issues/19) for more information.
 
 If you're not using `next/image`, you can edit the above example and add additional file formats. For example, you can add `arn:aws:s3:::BUCKET_NAME/*` to allow any file to be uploaded.
 
@@ -127,7 +127,7 @@ That's it! We're done configuring AWS for uploads.
 
 ## API Route
 
-In order for our Next app to securely communicate with S3 we'll need to create an API route for `pages/api/s3-upload.js`.
+In order for our Next app to securely communicate with S3 we'll need to create an API route. Paste the following into `pages/api/s3-upload.js`.
 
 ```js
 // pages/api/s3-upload.js
