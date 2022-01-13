@@ -15,7 +15,10 @@ function MyApp({ Component, pageProps }) {
 "
         />
         <meta name="twitter:card" content="summary" />
-        <meta name="twitter:image" content="/twitter-card-small.png" />
+        <meta
+          name="twitter:image"
+          content="https://next-s3-upload.codingvalue.com/twitter-card-small.png"
+        />
         <meta property="og:title" content="Next S3 Upload" />
         <meta
           property="og:description"
