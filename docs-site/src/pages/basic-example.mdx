@@ -1,6 +1,6 @@
 # Basic example
 
-This package provides a `useS3Upload` hook that gives you all of the pieces needed to coordinate an upload from your application to S3.
+This package provides a `useS3Upload` hook that gives you all of the pieces needed to upload from your application to S3.
 
 Here's an example of the simplest file upload component.
 
@@ -39,4 +39,4 @@ The `uploadToS3` function will return an object containing a URL to the file onc
 
 ## Things to note
 
-The `<FileInput>` renders a hidden file input tag that coordinates uploading the file. This library gives you `<FileInput>` because wiring up file inputs for uploading in React contains a bit of additional boilerplate code. Using this component will save you of time, but you can always [use your own file input](/custom-file-input) if you'd like.
+The `<FileInput>` renders a hidden file input tag that coordinates uploading the file. This library gives you `<FileInput>` component because wiring up functions to open file inputs in React contains a good chunk of boilerplate code. Using this component will save you of time, but you're free to [use your own file input](/custom-file-input) if you'd like.
