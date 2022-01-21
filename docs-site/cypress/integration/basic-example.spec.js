@@ -6,12 +6,10 @@ describe("Basic example", () => {
 
     cy.get("[data-test=file-input]").attachFile("woods.jpg");
 
-    cy.get("[data-test=image]")
-      .should("be.visible")
-      .waitUntil(([img]) => img.complete && img)
-      .then(([img]) => {
-        expect(img.complete).to.be.true;
-        expect(img.naturalWidth).to.be.greaterThan(0);
-      });
+    cy.get("button")
+      .contains("Start upload")
+      .click();
+
+    cy.get("[data-test=image]").isFixtureImage("woods.jpg");
   });
 });

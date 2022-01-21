@@ -26,3 +26,25 @@
 
 import "cypress-file-upload";
 import "cypress-wait-until";
+
+Cypress.Commands.add(
+  "isFixtureImage",
+  {
+    prevSubject: true
+  },
+  (subject, fixtureImage) => {
+    cy.wrap(subject)
+      .should("be.visible")
+      .waitUntil(([img]) => img.complete && img)
+      .then(([img]) => {
+        cy.fixture(fixtureImage).then(content => {
+          let fixtureImage = new Image();
+          fixtureImage.src = `data:image/jpeg;base64,${content}`;
+          fixtureImage.onload = () => {
+            expect(fixtureImage.naturalHeight).to.equal(img.naturalHeight);
+            expect(fixtureImage.naturalWidth).to.equal(img.naturalWidth);
+          };
+        });
+      });
+  }
+);
