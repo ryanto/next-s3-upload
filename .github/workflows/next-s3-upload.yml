@@ -24,10 +24,10 @@ jobs:
         uses: bahmutov/npm-install@v1
 
       - name: Lint
-        run: yarn workspaces next-s3-upload lint
+        run: yarn workspace next-s3-upload lint
 
       - name: Test
-        run: yarn test --ci --coverage --maxWorkers=2
+        run: yarn workspace next-s3-upload test --ci --coverage --maxWorkers=2
 
       - name: Build
-        run: yarn workspaces next-s3-upload build
+        run: yarn workspace next-s3-upload build
