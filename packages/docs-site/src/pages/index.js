@@ -1,8 +1,8 @@
-import Vimeo from '@u-wave/react-vimeo';
-import Snippet from '../snippets/homepage.mdx';
-import Link from 'next/link';
-import { useState } from 'react';
-import { ArrowSmRightIcon } from '@heroicons/react/outline';
+import Vimeo from "@u-wave/react-vimeo";
+import Snippet from "../snippets/homepage.mdx";
+import Link from "next/link";
+import { useState } from "react";
+import { ArrowSmRightIcon } from "@heroicons/react/outline";
 
 export default function Home() {
   let [videoPlayer, setVideoPlayer] = useState();
@@ -22,10 +22,10 @@ export default function Home() {
             Next S3 Upload
           </h1>
           <div className="mx-4 mt-8 text-xl leading-8 text-center text-gray-500 lg:text-2xl lg:mt-12 sm:mx-0">
-            The{' '}
+            The{" "}
             <em className="inline-block -rotate-3 px-2 sm:px-4 text-white py-0.5 sm:py-2.5 rounded bg-gradient-to-r from-purple-600 to-sky-600 -skew-x-12">
               <span className="inline-block skew-x-12 rotate-3">easiest</span>
-            </em>{' '}
+            </em>{" "}
             way to upload files from your Next.js app to S3.
           </div>
 
@@ -48,7 +48,7 @@ export default function Home() {
               className="hidden w-full bg-slate-100 aspect-video grow sm:block"
             />
 
-            <div className="w-100 max-w-[100vw] overflow-scroll xl:overflow-visible xl:w-auto bg-gray-800 md:rounded-b xl:rounded-none 2xl:rounded-r">
+            <div className="w-100 max-w-[100vw] overflow-scroll xl:overflow-visible xl:w-auto bg-gray-800 md:rounded-b xl:min-w-[500px] 2xl:min-w-[550px] xl:rounded-none xl:pl-1 xl:pr-6 1580px:rounded-r">
               <div className="prose shrink xl:prose-pre:text-[0.78rem] 2xl:prose-pre:text-sm">
                 <Snippet />
               </div>
