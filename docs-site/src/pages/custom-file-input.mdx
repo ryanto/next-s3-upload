@@ -5,15 +5,17 @@ This addon ships with a pre-wired `<FileInput />` component, but you can always 
 Here's how to use a native file input.
 
 ```jsx
-import { useState } from 'react';
-import { useS3Upload } from 'next-s3-upload';
+import { useState } from "react";
+import { useS3Upload } from "next-s3-upload";
 
 export default function UploadTest() {
   let [imageUrl, setImageUrl] = useState();
   let { uploadToS3 } = useS3Upload();
 
-  let handleFileChange = async file => {
+  let handleFileChange = async event => {
+    let file = event.target.files[0];
     let { url } = await uploadToS3(file);
+
     setImageUrl(url);
   };
 
