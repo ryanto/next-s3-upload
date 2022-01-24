@@ -10,9 +10,6 @@ jobs:
       matrix:
         node: ['16.x']
         os: [ubuntu-latest]
-    defaults:
-      run:
-        working-directory: ./packages/next-s3-upload
 
     steps:
       - name: Checkout repo
@@ -27,10 +24,10 @@ jobs:
         uses: bahmutov/npm-install@v1
 
       - name: Lint
-        run: yarn lint
+        run: yarn workspaces next-s3-upload lint
 
       - name: Test
         run: yarn test --ci --coverage --maxWorkers=2
 
       - name: Build
-        run: yarn build
+        run: yarn workspaces next-s3-upload build
