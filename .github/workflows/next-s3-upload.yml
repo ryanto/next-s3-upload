@@ -1,5 +1,6 @@
 name: CI
 on: [push, pull_request]
+
 jobs:
   build:
     name: Build, lint, and test on Node ${{ matrix.node }} and ${{ matrix.os }}
@@ -9,6 +10,9 @@ jobs:
       matrix:
         node: ['16.x']
         os: [ubuntu-latest]
+    defaults:
+      run:
+        working-directory: ./packages/next-s3-upload
 
     steps:
       - name: Checkout repo
@@ -25,8 +29,8 @@ jobs:
       - name: Lint
         run: yarn lint
 
-      # - name: Test
-      #   run: yarn test --ci --coverage --maxWorkers=2
+      - name: Test
+        run: yarn test --ci --coverage --maxWorkers=2
 
       - name: Build
         run: yarn build
