@@ -1,10 +1,10 @@
 # useS3Upload API
 
-The `useS3Upload` hook returns three items needed to coordinate the upload.
+The `useS3Upload` hook returns items needed to coordinate the upload.
 
 ```jsx
 const Component = () => {
-  let { FileInput, openFileDialog, uploadToS3 } = useS3Upload();
+  let { FileInput, openFileDialog, uploadToS3, files } = useS3Upload();
 
   // ...
 };
@@ -14,4 +14,16 @@ const Component = () => {
 | ------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
 | `FileInput`        | A component that renders a hidden file input. It needs to be rendered on the page in order to coordinate file access.            |
 | `openFileDialog`   | A function that opens the browser's select a file dialog. Once a file is selected the `FileInput`'s `onChange` action will fire. |
-| `uploadToS3(file)` | A function that will upload a `File` to your S3 bucket.                                                                          |
+| `uploadToS3(file)` | A function that will upload a file from a file input to your S3 bucket.                                                          |
+| `files`            | Any array of files objects, see `Files` below.                                                                                   |
+
+## Files
+
+The `files` array returned from `useS3Upload()` contains a list of files that are currently uploading or have already been uploaded. Each object in the list has the following structure.
+
+| Key        | Description                                                                                               |
+| ---------- | --------------------------------------------------------------------------------------------------------- |
+| `file`     | The JavaScript [File Object](https://developer.mozilla.org/en-US/docs/Web/API/File) of the uploaded file. |
+| `uploaded` | An integer representing the total number of bytes that been uploaded so far.                              |
+| `size`     | An integer representing the total size of the file.                                                       |
+| `progress` | The percentage (between 0 and 100) of the file that has been uploaded.                                    |

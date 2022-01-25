@@ -1,6 +1,6 @@
-import Head from 'next/head';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
+import Head from "next/head";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function({ children, tableOfContents }) {
   return (
@@ -50,9 +50,9 @@ export default function({ children, tableOfContents }) {
             <li className="pt-1 border-l border-gray-200">
               <DocLink href="/next-image">Using next/image</DocLink>
             </li>
-            {/* <li className="pt-1 border-l border-gray-200">
+            <li className="pt-1 border-l border-gray-200">
               <DocLink href="/tracking-progress">Tracking progress</DocLink>
-            </li> */}
+            </li>
             <li className="pt-1 border-l border-gray-200">
               <DocLink href="/multi-file-uploads">Multiple files</DocLink>
             </li>
@@ -114,8 +114,8 @@ const DocLink = ({ href, children }) => {
         pl-3
         ${
           isActive
-            ? 'text-purple-500 hover:text-purple-600 font-semibold'
-            : 'text-gray-600 hover:text-gray-700 hover:underline'
+            ? "text-purple-500 hover:text-purple-600 font-semibold"
+            : "text-gray-600 hover:text-gray-700 hover:underline"
         }`}
       >
         {children}
@@ -149,7 +149,7 @@ function TOC({ tableOfContents, level = 1 }) {
   let router = useRouter();
 
   return tableOfContents.map(({ title, slug, children }) => (
-    <ul key={slug} className={`${level > 2 ? 'pl-2' : ''}`}>
+    <ul key={slug} className={`${level > 2 ? "pl-2" : ""}`}>
       <li className="pt-2">
         <Link href={`${router.pathname}#${slug}`}>
           <a>{title}</a>

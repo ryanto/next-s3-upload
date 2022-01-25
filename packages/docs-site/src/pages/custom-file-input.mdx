@@ -8,7 +8,7 @@ Here's how to use a native file input.
 import { useState } from "react";
 import { useS3Upload } from "next-s3-upload";
 
-export default function UploadTest() {
+export default function UploadPage() {
   let [imageUrl, setImageUrl] = useState();
   let { uploadToS3 } = useS3Upload();
 
