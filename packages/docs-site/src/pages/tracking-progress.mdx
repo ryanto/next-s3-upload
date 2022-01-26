@@ -14,6 +14,7 @@ export default function UploadPage() {
   let { uploadToS3, files } = useS3Upload();
 
   let handleFileChange = async event => {
+    let file = event.target.files[0];
     await uploadToS3(file);
   };
 
