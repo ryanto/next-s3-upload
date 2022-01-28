@@ -34,16 +34,20 @@ Cypress.Commands.add(
   },
   (subject, fixtureImage) => {
     cy.wrap(subject)
-      .should("be.visible")
-      .waitUntil(([img]) => img.complete && img)
+      .should(([img]) => {
+        expect(img.complete).to.be.true;
+      })
       .then(([img]) => {
         cy.fixture(fixtureImage).then(content => {
           let fixtureImage = new Image();
           fixtureImage.src = `data:image/jpeg;base64,${content}`;
-          fixtureImage.onload = () => {
-            expect(fixtureImage.naturalHeight).to.equal(img.naturalHeight);
-            expect(fixtureImage.naturalWidth).to.equal(img.naturalWidth);
-          };
+          return new Promise(resolve => {
+            fixtureImage.onload = () => {
+              expect(img.naturalWidth).to.equal(fixtureImage.naturalWidth);
+              expect(img.naturalHeight).to.equal(fixtureImage.naturalHeight);
+              resolve();
+            };
+          });
         });
       });
   }
