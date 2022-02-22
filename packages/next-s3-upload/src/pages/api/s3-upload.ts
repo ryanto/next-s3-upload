@@ -72,14 +72,27 @@ let makeRouteHandler = (options: Options = {}): Handler => {
   return Object.assign(route, { configure });
 };
 
+// This code checks the for missing env vars that this
+// API route needs.
+//
+// Why does this code look like this? See this issue!
+// https://github.com/ryanto/next-s3-upload/issues/50
+//
 let missingEnvs = (): string[] => {
-  let keys = [
-    'S3_UPLOAD_KEY',
-    'S3_UPLOAD_SECRET',
-    'S3_UPLOAD_REGION',
-    'S3_UPLOAD_BUCKET',
-  ];
-  return keys.filter(key => !process.env[key]);
+  let keys = [];
+  if (!process.env.S3_UPLOAD_KEY) {
+    keys.push('S3_UPLOAD_KEY');
+  }
+  if (!process.env.S3_UPLOAD_SECRET) {
+    keys.push('S3_UPLOAD_SECRET');
+  }
+  if (!process.env.S3_UPLOAD_REGION) {
+    keys.push('S3_UPLOAD_REGION');
+  }
+  if (!process.env.S3_UPLOAD_BUCKET) {
+    keys.push('S3_UPLOAD_BUCKET');
+  }
+  return keys;
 };
 
 let APIRoute = makeRouteHandler();
