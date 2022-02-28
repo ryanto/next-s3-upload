@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import aws from 'aws-sdk';
+import { STSClient, GetFederationTokenCommand } from '@aws-sdk/client-sts';
 import { v4 as uuidv4 } from 'uuid';
 
 type NextRouteHandler = (
@@ -15,7 +15,7 @@ type Options = {
 };
 
 let makeRouteHandler = (options: Options = {}): Handler => {
-  let route: NextRouteHandler = async function(req, res) {
+  let route: NextRouteHandler = async function (req, res) {
     let missing = missingEnvs();
     if (missing.length > 0) {
       res
@@ -46,15 +46,16 @@ let makeRouteHandler = (options: Options = {}): Handler => {
         ],
       };
 
-      let sts = new aws.STS(config);
+      let sts = new STSClient(config);
 
-      let token = await sts
-        .getFederationToken({
-          Name: 'S3UploadWebToken',
-          Policy: JSON.stringify(policy),
-          DurationSeconds: 60 * 60, // 1 hour
-        })
-        .promise();
+      let command = new GetFederationTokenCommand({
+        Name: 'S3UploadWebToken',
+        Policy: JSON.stringify(policy),
+        DurationSeconds: 60 * 60, // 1 hour
+      });
+
+
+      let token = await sts.send(command);
 
       res.statusCode = 200;
 
