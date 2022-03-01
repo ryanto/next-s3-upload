@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { STSClient, GetFederationTokenCommand } from '@aws-sdk/client-sts';
+import { STSClient, GetFederationTokenCommand, STSClientConfig } from '@aws-sdk/client-sts';
 import { v4 as uuidv4 } from 'uuid';
 
 type NextRouteHandler = (
@@ -22,9 +22,11 @@ let makeRouteHandler = (options: Options = {}): Handler => {
         .status(500)
         .json({ error: `Next S3 Upload: Missing ENVs ${missing.join(', ')}` });
     } else {
-      let config = {
-        accessKeyId: process.env.S3_UPLOAD_KEY,
-        secretAccessKey: process.env.S3_UPLOAD_SECRET,
+      let config: STSClientConfig = {
+        credentials: {
+          accessKeyId: process.env.S3_UPLOAD_KEY as string,
+          secretAccessKey: process.env.S3_UPLOAD_SECRET as string,
+        },
         region: process.env.S3_UPLOAD_REGION,
       };
 
