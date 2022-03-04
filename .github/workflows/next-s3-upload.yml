@@ -36,6 +36,12 @@ jobs:
     name: Build the docs site and run tests against its examples
 
     runs-on: ubuntu-latest
+    env:
+      S3_UPLOAD_KEY: ${{ secrets.S3_UPLOAD_KEY }}
+      S3_UPLOAD_SECRET: ${{ secrets.S3_UPLOAD_SECRET }}
+      S3_UPLOAD_BUCKET: next-uploads-1
+      S3_UPLOAD_REGION: us-east-1
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
