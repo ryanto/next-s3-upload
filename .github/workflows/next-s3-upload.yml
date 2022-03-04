@@ -46,6 +46,9 @@ jobs:
           node-version: 16.13.0
           cache: "yarn"
 
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
       - name: Build addon
         run: yarn workspace next-s3-upload build
 
