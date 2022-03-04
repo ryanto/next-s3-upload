@@ -32,8 +32,8 @@ jobs:
       - name: Build
         run: yarn workspace next-s3-upload build
 
-  cypress:
-    name: Run cypress tests against the docs site
+  docs:
+    name: Build the docs site and run tests against its examples
 
     runs-on: ubuntu-latest
     steps:
@@ -46,11 +46,14 @@ jobs:
           node-version: 16.13.0
           cache: "yarn"
 
+      - name: Build addon
+        run: yarn workspace next-s3-upload build
+
       - name: Cypress tests
         uses: cypress-io/github-action@v2
         with:
           install-command: yarn install --frozen-lockfile
-          build: yarn workspace next-s3-upload build
+          build: yarn workspace docs-site build
           start: yarn workspace docs-site start
           wait-on: "http://localhost:3000"
           command: yarn workspace docs-site cypress run
