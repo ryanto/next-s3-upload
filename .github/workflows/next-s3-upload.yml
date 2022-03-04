@@ -44,6 +44,7 @@ jobs:
           build: yarn workspace next-s3-upload build
           start: yarn workspace docs-site start
           wait-on: "http://localhost:3000"
+          command: yarn workspace docs-site cypress run
 
       - name: Upload Cypress Screenshots
         uses: actions/upload-artifact@v1
