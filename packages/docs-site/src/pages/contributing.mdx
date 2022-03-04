@@ -1,0 +1,85 @@
+# Contributing
+
+## Setup
+
+First, clone the [next-s3-upload repo](https://github.com/ryanto/next-s3-upload) from GitHub.
+
+```bash
+git clone git@github.com:ryanto/next-s3-upload.git
+```
+
+This package uses a yarn monorepo to manage both the next-s3-upload source as well as this documentation site.
+
+## Install
+
+To install the dependencies needed to work on the library run the following command from the workspace root.
+
+```bash
+yarn install
+```
+
+## Next-s3-upload
+
+Run the build tool using the following command from the workspace root.
+
+```bash
+yarn dev
+```
+
+This will start the development build server. You can now edit the source code in `packages/next-s3-upload` and the library will rebuild itself on every file change.
+
+## Documentation site
+
+To run the docs site use the following command:
+
+```bash
+yarn docs
+```
+
+Then visit http://localhost:3000.
+
+The docs source code is under the `packages/docs-site` directory. The website will rebuild itself on every file change.
+
+## Testing
+
+### Setup
+
+Tests are run against the examples in the docs site using a local build of the `next-s3-upload` package.
+
+These tests are written to verify that uploading to an S3 bucket works correctly, so you'll first need to [setup and configure](/setup) an S3 bucket for uploads. It's best to setup a new S3 bucket for testing purposes, since the test suite will upload a number of files as it runs.
+
+Once you have the S3 bucket setup, create the following file, `packages/docs-site/.env.local`, with each of the necessary next-s3-upload ENV variables.
+
+```text
+# this file: packages/docs-site/.env.local
+
+S3_UPLOAD_KEY=XXXXX
+S3_UPLOAD_SECRET=XXXXX
+S3_UPLOAD_BUCKET=XXXXX
+S3_UPLOAD_REGION=XXXXX
+```
+
+Replace the `XXXXX`s with real values. This file is git ignored, so there's no need to worry about it being checked into version control.
+
+### Running tests
+
+While both the build tool and docs site are running you can use a 3rd command to run tests.
+
+```bash
+# In the first terminal start the build server
+yarn dev
+
+# In the second terminal start the docs site
+yarn docs
+
+# In a third terminal run the test suite
+yarn workspace docs-site cypress open
+```
+
+Both `yarn dev` and `yarn docs` **MUST** be running for the tests to work correctly.
+
+The test suite is written in Cypress and the files are located under `packages/docs-site/cypress`.
+
+## Questions
+
+Open a [GitHub issue](https://github.com/ryanto/next-s3-upload/issues) if you run into any issues with this guide.
