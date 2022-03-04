@@ -31,3 +31,24 @@ jobs:
 
       - name: Build
         run: yarn workspace next-s3-upload build
+
+  cypress:
+    name: Run cypress tests against the docs site
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cypress tests
+        uses: cypress-io/github-action@v2
+        with:
+          install-command: yarn install --frozen-lockfile
+          build: yarn workspace next-s3-upload build
+          start: yarn workspace docs-site start
+          wait-on: "http://localhost:3000"
+
+      - name: Upload Cypress Screenshots
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+
