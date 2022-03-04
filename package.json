@@ -1,4 +1,8 @@
 {
   "private": true,
-  "workspaces": ["packages/next-s3-upload", "packages/docs-site"]
+  "workspaces": ["packages/next-s3-upload", "packages/docs-site"],
+  "scripts": {
+    "dev": "yarn workspace next-s3-upload start",
+    "docs": "yarn workspace docs-site dev"
+  }
 }

@@ -3,10 +3,12 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 export default function({ children, tableOfContents }) {
+  let bestTitle = tableOfContents[0]?.title || "Next S3 Upload";
+
   return (
     <div className="flex flex-col max-w-screen-xl mx-auto">
       <Head>
-        <title>Next S3 Upload</title>
+        <title>{bestTitle}</title>
       </Head>
       <div className="mx-auto px-4 mt-10 md:px-0 w-full md:w-[65ch] lg:w-[calc(14rem+65ch)] xl:w-[calc(14rem+14rem+65ch)]">
         <div className="flex items-center justify-between">
@@ -83,10 +85,13 @@ export default function({ children, tableOfContents }) {
             Help & support
           </h6>
           <ul>
-            <li className="pt-1 pb-1 mt-1 border-l border-gray-200">
+            <li className="pt-1 mt-1 border-l border-gray-200">
               <DocLink href="https://github.com/ryanto/next-s3-upload/issues">
                 Github issues
               </DocLink>
+            </li>
+            <li className="pt-1 pb-1 border-l border-gray-200">
+              <DocLink href="/contributing">Contributing</DocLink>
             </li>
           </ul>
         </div>
