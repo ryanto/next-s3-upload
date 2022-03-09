@@ -1,8 +1,8 @@
 /// <reference types="cypress" />
 
-describe("Basic example", () => {
+describe("Form file input example", () => {
   it("should be able to upload a file", () => {
-    cy.visit("/examples/basic");
+    cy.visit("/examples/form-file-input");
 
     cy.get("[data-test=file-input]").attachFile("woods.jpg");
 

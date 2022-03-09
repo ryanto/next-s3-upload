@@ -5,8 +5,8 @@ export default function UploadTest() {
   let [imageUrl, setImageUrl] = useState();
   let { uploadToS3, files } = useS3Upload();
 
-  let handleFileChange = async event => {
-    let file = event.target.files[0];
+  let handleFileChange = async ({ target }) => {
+    let file = target.files[0];
     let { url } = await uploadToS3(file);
     setImageUrl(url);
   };

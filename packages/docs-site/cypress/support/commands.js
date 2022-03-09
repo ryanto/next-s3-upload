@@ -32,23 +32,42 @@ Cypress.Commands.add(
   {
     prevSubject: true
   },
-  (subject, fixtureImage) => {
+  (subject, fixtureFile) => {
     cy.wrap(subject)
-      .should(([img]) => {
-        expect(img.complete).to.be.true;
-      })
+      .imageHasLoaded()
       .then(([img]) => {
-        cy.fixture(fixtureImage).then(content => {
-          let fixtureImage = new Image();
-          fixtureImage.src = `data:image/jpeg;base64,${content}`;
-          return new Promise(resolve => {
-            fixtureImage.onload = () => {
-              expect(img.naturalWidth).to.equal(fixtureImage.naturalWidth);
-              expect(img.naturalHeight).to.equal(fixtureImage.naturalHeight);
-              resolve();
-            };
-          });
+        cy.fixtureImageData(fixtureFile).then(({ height, width }) => {
+          expect(img.naturalWidth).to.equal(width);
+          expect(img.naturalHeight).to.equal(height);
         });
       });
   }
 );
+
+Cypress.Commands.add(
+  "imageHasLoaded",
+  {
+    prevSubject: true
+  },
+  subject => {
+    cy.wrap(subject).should(([img]) => {
+      expect(img.complete).to.be.true;
+    });
+  }
+);
+
+Cypress.Commands.add("fixtureImageData", fixtureFile => {
+  cy.fixture(fixtureFile).then(content => {
+    let fixtureImage = new Image();
+    fixtureImage.src = `data:image/jpeg;base64,${content}`;
+
+    return new Promise(resolve => {
+      fixtureImage.onload = () => {
+        resolve({
+          height: fixtureImage.naturalHeight,
+          width: fixtureImage.naturalWidth
+        });
+      };
+    });
+  });
+});
