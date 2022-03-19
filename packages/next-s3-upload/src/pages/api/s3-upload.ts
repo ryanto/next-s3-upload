@@ -22,7 +22,7 @@ let makeRouteHandler = (options: Options = {}): Handler => {
         .status(500)
         .json({ error: `Next S3 Upload: Missing ENVs ${missing.join(', ')}` });
     } else {
-      let config = false;
+      let config = null;
       // Allow for custom S3 Endpoint (to use DigitalOcean Spaces, Scaleway, Wasabi, etc...)
       let s3endpoint = process.env.S3_CUSTOM_ENDPOINT || false;
       if (s3endpoint) {
