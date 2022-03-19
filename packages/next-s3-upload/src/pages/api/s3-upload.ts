@@ -27,7 +27,12 @@ let makeRouteHandler = (options: Options = {}): Handler => {
         secretAccessKey: process.env.S3_UPLOAD_SECRET,
         region: process.env.S3_UPLOAD_REGION,
       };
-
+      // Allow for custom S3 Endpoint (to use DigitalOcean Spaces, Scaleway, Wasabi, etc...)
+      let s3endpoint = process.env.S3_CUSTOM_ENDPOINT || false;
+      if (s3endpoint) {
+        config.s3BucketEndpoint = true;
+        config.endpoint: s3endpoint;
+      }
       let bucket = process.env.S3_UPLOAD_BUCKET;
 
       let filename = req.query.filename as string;
@@ -58,12 +63,23 @@ let makeRouteHandler = (options: Options = {}): Handler => {
 
       res.statusCode = 200;
 
-      res.status(200).json({
-        token,
-        key,
-        bucket,
-        region: process.env.S3_UPLOAD_REGION,
-      });
+      if (s3endpoint) {
+          res.status(200).json({
+          token,
+          key,
+          bucket,
+          region: process.env.S3_UPLOAD_REGION,
+          endpoint: s3endpoint,
+        });
+      }
+      else {
+        res.status(200).json({
+          token,
+          key,
+          bucket,
+          region: process.env.S3_UPLOAD_REGION,
+        });
+      }
     }
   };
 
