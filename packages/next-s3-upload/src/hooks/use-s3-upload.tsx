@@ -79,8 +79,9 @@ export const useS3Upload: UseS3Upload = (options = {}) => {
       console.error(data.error);
       throw data.error;
     } else {
+      let s3 = false;
       if(data.endpoint) {
-        let s3 = new S3({
+        s3 = new S3({
           accessKeyId: data.token.Credentials.AccessKeyId,
           secretAccessKey: data.token.Credentials.SecretAccessKey,
           sessionToken: data.token.Credentials.SessionToken,
@@ -88,7 +89,7 @@ export const useS3Upload: UseS3Upload = (options = {}) => {
           endpoint: data.endpoint,
         });
       } else {
-        let s3 = new S3({
+        s3 = new S3({
           accessKeyId: data.token.Credentials.AccessKeyId,
           secretAccessKey: data.token.Credentials.SecretAccessKey,
           sessionToken: data.token.Credentials.SessionToken,
