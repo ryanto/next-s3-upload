@@ -79,12 +79,22 @@ export const useS3Upload: UseS3Upload = (options = {}) => {
       console.error(data.error);
       throw data.error;
     } else {
-      let s3 = new S3({
-        accessKeyId: data.token.Credentials.AccessKeyId,
-        secretAccessKey: data.token.Credentials.SecretAccessKey,
-        sessionToken: data.token.Credentials.SessionToken,
-        region: data.region,
-      });
+      if(data.endpoint) {
+        let s3 = new S3({
+          accessKeyId: data.token.Credentials.AccessKeyId,
+          secretAccessKey: data.token.Credentials.SecretAccessKey,
+          sessionToken: data.token.Credentials.SessionToken,
+          region: data.region,
+          endpoint: data.endpoint,
+        });
+      } else {
+        let s3 = new S3({
+          accessKeyId: data.token.Credentials.AccessKeyId,
+          secretAccessKey: data.token.Credentials.SecretAccessKey,
+          sessionToken: data.token.Credentials.SessionToken,
+          region: data.region,
+        });
+      }
 
       let params = {
         ACL: 'public-read',
