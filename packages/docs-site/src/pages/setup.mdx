@@ -19,6 +19,9 @@ S3_UPLOAD_KEY=AAAAAAAAAAAAAAAAAAAA
 S3_UPLOAD_SECRET=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 S3_UPLOAD_BUCKET=name-of-s3-bucket
 S3_UPLOAD_REGION=bucket-region-us-east-1
+# Optional Custom Endpoint to allow using S3 providers other than AWS (ie: DigitalOcean, Scaleway, Wasabi...)
+# To Use: uncomment and update to your own endpoint:
+# S3_CUSTOM_ENDPOINT=https://s3.nl-ams.scw.cloud
 ```
 
 Next.js automatically supports [loading environment variables](https://nextjs.org/docs/basic-features/environment-variables) from `.env.local` in the project's root. For development it's best to put these values into `.env.local`.
