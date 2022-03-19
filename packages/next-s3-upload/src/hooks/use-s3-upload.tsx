@@ -79,7 +79,7 @@ export const useS3Upload: UseS3Upload = (options = {}) => {
       console.error(data.error);
       throw data.error;
     } else {
-      let s3 = false;
+      let s3 = null;
       if(data.endpoint) {
         s3 = new S3({
           accessKeyId: data.token.Credentials.AccessKeyId,
