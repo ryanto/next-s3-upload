@@ -22,16 +22,22 @@ let makeRouteHandler = (options: Options = {}): Handler => {
         .status(500)
         .json({ error: `Next S3 Upload: Missing ENVs ${missing.join(', ')}` });
     } else {
-      let config = {
-        accessKeyId: process.env.S3_UPLOAD_KEY,
-        secretAccessKey: process.env.S3_UPLOAD_SECRET,
-        region: process.env.S3_UPLOAD_REGION,
-      };
+      let config = false;
       // Allow for custom S3 Endpoint (to use DigitalOcean Spaces, Scaleway, Wasabi, etc...)
       let s3endpoint = process.env.S3_CUSTOM_ENDPOINT || false;
       if (s3endpoint) {
-        config.s3BucketEndpoint = true;
-        config.endpoint: s3endpoint;
+        config = {
+          accessKeyId: process.env.S3_UPLOAD_KEY,
+          secretAccessKey: process.env.S3_UPLOAD_SECRET,
+          region: process.env.S3_UPLOAD_REGION,
+          endpoint: s3endpoint
+        };
+      } else {
+        config = {
+          accessKeyId: process.env.S3_UPLOAD_KEY,
+          secretAccessKey: process.env.S3_UPLOAD_SECRET,
+          region: process.env.S3_UPLOAD_REGION,
+        };
       }
       let bucket = process.env.S3_UPLOAD_BUCKET;
 
