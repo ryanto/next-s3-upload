@@ -87,7 +87,6 @@ export const useS3Upload: UseS3Upload = (options = {}) => {
       });
 
       let params = {
-        ACL: 'public-read',
         Bucket: data.bucket,
         Key: data.key,
         Body: file,
