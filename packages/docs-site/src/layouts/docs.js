@@ -26,7 +26,7 @@ export default function({ children, tableOfContents }) {
         </div>
       </div>
       <div className="flex max-w-screen-xl px-4 mx-auto md:px-0 mt-14">
-        <div className="hidden w-56 pr-12 lg:block">
+        <div className="order-1 hidden w-56 pr-12 lg:block">
           <h6 className="text-sm font-semibold text-gray-900">
             Getting started
           </h6>
@@ -95,12 +95,12 @@ export default function({ children, tableOfContents }) {
             </li>
           </ul>
         </div>
-        <div className="grow prose prose-pre:rounded-none md:prose-pre:rounded prose-code:text-purple-600 mb-32 md:min-w-[65ch] max-w-[calc(100vw-2rem)] md:max-w-prose mx-auto lg:mx-0">
-          {children}
-        </div>
-        <div className="hidden w-56 pl-12 text-xs xl:block">
+        <div className="order-3 hidden w-56 pl-12 text-xs xl:block">
           <div className="font-semibold uppercase">On this page</div>
           <TOC tableOfContents={tableOfContents} />
+        </div>
+        <div className="order-2 grow prose prose-pre:rounded-none md:prose-pre:rounded prose-code:text-purple-600 mb-32 md:min-w-[65ch] max-w-[calc(100vw-2rem)] md:max-w-prose mx-auto lg:mx-0">
+          {children}
         </div>
       </div>
     </div>
