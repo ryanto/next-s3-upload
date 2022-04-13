@@ -33,11 +33,45 @@ Create a new S3 bucket and store the name of the bucket as `S3_UPLOAD_BUCKET` an
 
 ### Bucket permissions
 
+#### Public access
+
 Once the bucket is created you'll need to go to the permissions tab and make sure that public access is not blocked.
 
 ![Bucket public access](/bucket-public-access.png)
 
-You'll also need to add the following permissions in the CORS section.
+#### Bucket policy
+
+Next, you'll need to add the following bucket policy. Click the _Edit_ button in the _Bucket policy_ section and paste in the following policy.
+
+![Bucket policy](/bucket-policy.png)
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Statement1",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::BUCKET_NAME/*"
+    }
+  ]
+}
+```
+
+🚨 **Important** 🚨 Before saving the policy, you'll need to replace:
+
+|                 |                                                          |
+| --------------- | -------------------------------------------------------- |
+| **BUCKET_NAME** | The name of the bucket you created in the previous step. |
+|                 |                                                          |
+
+Save the policy to return to the bucket permissions screen.
+
+#### CORS permissions
+
+Next, you'll also need to add the following permissions in the CORS section.
 
 ```json
 [
@@ -105,7 +139,7 @@ When the policy editor opens, click on the _JSON_ tab and paste in the following
 
 ### Allowed file formats
 
-The example above only allows `jpg`, `png`, and `gif` files to be uploaded. If you're planning to use `next/image` with files uploaded to S3 you'll want to make sure that only images are allowed to be uploaded. See [this issue](https://github.com/ryanto/next-s3-upload/issues/19) for more information.
+The example above only allows `jpg`, `png`, and `gif` files to be uploaded. If you're planning to use `next/image` with files uploaded to S3 you'll want to make sure that only images are allowed to be uploaded.
 
 If you're not using `next/image`, you can edit the above example and add additional file formats. For example, you can add `arn:aws:s3:::BUCKET_NAME/*` to allow any file to be uploaded.
 
@@ -131,7 +165,7 @@ In order for our Next app to securely communicate with S3 we'll need to create a
 
 ```js
 // pages/api/s3-upload.js
-export { APIRoute as default } from 'next-s3-upload';
+export { APIRoute as default } from "next-s3-upload";
 ```
 
 That's it. This module's `APIRoute` takes care of all the communication with S3.

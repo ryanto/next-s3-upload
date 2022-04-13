@@ -40,7 +40,7 @@ let makeRouteHandler = (options: Options = {}): Handler => {
           {
             Sid: 'Stmt1S3UploadAssets',
             Effect: 'Allow',
-            Action: ['s3:PutObject', 's3:PutObjectAcl'],
+            Action: ['s3:PutObject'],
             Resource: [`arn:aws:s3:::${bucket}/${key}`],
           },
         ],

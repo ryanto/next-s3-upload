@@ -4,12 +4,12 @@ By default this addon will give every upload a unique key in your S3 bucket. If 
 
 ```js
 // pages/api/s3-upload.js
-import { APIRoute } from 'next-s3-upload';
+import { APIRoute } from "next-s3-upload";
 
 export default APIRoute.configure({
   key(req, filename) {
     return `my/uploads/path/${filename.toUpperCase()}`;
-  },
+  }
 });
 ```
 
@@ -17,13 +17,13 @@ The key function can return a promise if you need to do something async.
 
 ```js
 // pages/api/s3-upload.js
-import { APIRoute } from 'next-s3-upload';
+import { APIRoute } from "next-s3-upload";
 
 export default APIRoute.configure({
   async key(req, filename) {
     const user = await currentUser(req);
     return `users/${user.id}/${filename}`;
-  },
+  }
 });
 ```
 
