@@ -21,10 +21,95 @@ import { APIRoute } from "next-s3-upload";
 
 export default APIRoute.configure({
   async key(req, filename) {
-    const user = await currentUser(req);
-    return `users/${user.id}/${filename}`;
+    let path = await getPath();
+    return `${path}/${filename}`;
   }
 });
 ```
 
-The signature of the key function is: `(req: NextApiRequest, filename: string) => string | Promise<string>`.
+## Data from React
+
+You can pass data from your React app to the key function using `uploadToS3` options.
+
+In the example below, we pass a `projectId` from the frontend using the `endpoint.request.body` option.
+
+```js
+// Frontend component
+function Component() {
+  let { uploadToS3 } = useS3Upload();
+
+  let handleSubmit = async () => {
+    // You can pass extra data using `endpoint.request.body`
+
+    await uploadToS3(file, {
+      endpoint: {
+        request: {
+          body: {
+            projectId: 123
+          }
+        }
+      }
+    });
+  };
+}
+```
+
+Now the key function can read the passed `projectId` from `req.body.projectId`.
+
+```js
+// pages/api/s3-upload.js
+import { APIRoute } from "next-s3-upload";
+
+export default APIRoute.configure({
+  async key(req, filename) {
+    let projectId = req.body.projectId; // 123
+
+    return `projects/${projectId}/${filename}`;
+  }
+});
+```
+
+All data that needs to be passed from the frontend should be sent under the `endpoint.request.body` object, since that data will get serialized into the request's body.
+
+You can pass any data you'd like here, as long as it's serializable into JSON.
+
+## Headers
+
+The `uploadToS3` function can also add request headers that can be used by the key function.
+
+```js
+// Frontend component
+function Component() {
+  let { user } = useAuth();
+  let { uploadToS3 } = useS3Upload();
+
+  let handleSubmit = async () => {
+    let authToken = await user.getAuthToken();
+
+    await uploadToS3(file, {
+      endpoint: {
+        request: {
+          headers: {
+            authorization: authToken
+          }
+        }
+      }
+    });
+  };
+}
+```
+
+And the authorization header can be read using `req.headers.authorization`.
+
+```js
+// pages/api/s3-upload.js
+import { APIRoute } from "next-s3-upload";
+
+export default APIRoute.configure({
+  async key(req, filename) {
+    let user = await getUserFromAuthToken(req.headers.authorization);
+
+    return `users/${user.id}/${filename}`;
+  }
+});
+```

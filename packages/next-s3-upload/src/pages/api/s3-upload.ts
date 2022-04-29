@@ -30,7 +30,7 @@ let makeRouteHandler = (options: Options = {}): Handler => {
 
       let bucket = process.env.S3_UPLOAD_BUCKET;
 
-      let filename = req.query.filename as string;
+      let filename = req.body.filename;
       let key = options.key
         ? await Promise.resolve(options.key(req, filename))
         : `next-s3-uploads/${uuidv4()}/${filename.replace(/\s/g, '-')}`;
