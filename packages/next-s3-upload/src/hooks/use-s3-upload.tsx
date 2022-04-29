@@ -46,7 +46,23 @@ type UploadResult = {
   key: string;
 };
 
-type UploadToS3 = (file: File) => Promise<UploadResult>;
+type RequestOptions = {
+  body: Record<string, any>;
+  headers: HeadersInit;
+};
+
+type EndpointOptions = {
+  request: RequestOptions;
+};
+
+type UploadToS3Options = {
+  endpoint?: EndpointOptions;
+};
+
+type UploadToS3 = (
+  file: File,
+  options?: UploadToS3Options
+) => Promise<UploadResult>;
 
 type UseS3UploadTools = {
   FileInput: (props: any) => ReactElement<HTMLInputElement>;
@@ -70,9 +86,30 @@ export const useS3Upload: UseS3Upload = (options = {}) => {
 
   let endpoint = options.endpoint ?? '/api/s3-upload';
 
-  let uploadToS3: UploadToS3 = async file => {
+  let uploadToS3: UploadToS3 = async (file, options = {}) => {
     let filename = encodeURIComponent(file.name);
-    let res = await fetch(`${endpoint}?filename=${filename}`);
+
+    let requestExtras = options?.endpoint?.request ?? {
+      headers: {},
+      body: {},
+    };
+
+    let body = {
+      filename,
+      ...requestExtras.body,
+    };
+
+    let headers = {
+      ...requestExtras.headers,
+      'Content-Type': 'application/json',
+    };
+
+    let res = await fetch(endpoint, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(body),
+    });
+
     let data = await res.json();
 
     if (data.error) {
