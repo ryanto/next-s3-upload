@@ -14,8 +14,28 @@ const Component = () => {
 | ------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
 | `FileInput`        | A component that renders a hidden file input. It needs to be rendered on the page in order to coordinate file access.            |
 | `openFileDialog`   | A function that opens the browser's select a file dialog. Once a file is selected the `FileInput`'s `onChange` action will fire. |
-| `uploadToS3(file)` | A function that will upload a file from a file input to your S3 bucket.                                                          |
+| `uploadToS3(file)` | A function that will upload a file from a file input to your S3 bucket. For details on options, see uploadToS3 options below.    |
 | `files`            | Any array of files objects, see `Files` below.                                                                                   |
+
+## uploadToS3 Options
+
+The `uploadToS3` can take options that allow you to customize the request send to your API route.
+
+```js
+uploadToS3(file, {
+  endpoint: {
+    request: {
+      body: {},
+      headers: {}
+    }
+  }
+});
+```
+
+| Option                     | Description                               |
+| -------------------------- | ----------------------------------------- |
+| `endpoint.request.body`    | Additional data sent in the body payload. |
+| `endpoint.request.headers` | Additional HTTP request headers.          |
 
 ## Files
 
