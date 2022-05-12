@@ -1,7 +1,8 @@
 import React, { ChangeEvent, ReactElement } from 'react';
 import { useRef, useState } from 'react';
 import { forwardRef } from 'react';
-import S3 from 'aws-sdk/clients/s3';
+import { S3Client } from '@aws-sdk/client-s3';
+import { Upload } from '@aws-sdk/lib-storage';
 
 type FileInputProps = {
   onChange: (
@@ -12,7 +13,7 @@ type FileInputProps = {
 };
 
 let FileInput = forwardRef<HTMLInputElement, FileInputProps>(
-  ({ onChange = () => {}, ...restOfProps }, forwardedRef) => {
+  ({ onChange = () => { }, ...restOfProps }, forwardedRef) => {
     let handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
       let file = event.target?.files?.[0];
       onChange(file, event);
@@ -116,10 +117,12 @@ export const useS3Upload: UseS3Upload = (options = {}) => {
       console.error(data.error);
       throw data.error;
     } else {
-      let s3 = new S3({
-        accessKeyId: data.token.Credentials.AccessKeyId,
-        secretAccessKey: data.token.Credentials.SecretAccessKey,
-        sessionToken: data.token.Credentials.SessionToken,
+      let client = new S3Client({
+        credentials: {
+          accessKeyId: data.token.Credentials.AccessKeyId,
+          secretAccessKey: data.token.Credentials.SecretAccessKey,
+          sessionToken: data.token.Credentials.SessionToken,
+        },
         region: data.region,
       });
 
@@ -137,36 +140,41 @@ export const useS3Upload: UseS3Upload = (options = {}) => {
       //   queueSize: 1,
       // };
 
-      let s3Upload = s3.upload(params);
+      let s3Upload = new Upload({
+        client,
+        params
+      });
 
       setFiles(files => [
         ...files,
         { file, progress: 0, uploaded: 0, size: file.size },
       ]);
 
-      s3Upload.on('httpUploadProgress', event => {
+      s3Upload.on('httpUploadProgress', (event: any) => {
         if (event.total) {
           setFiles(files =>
             files.map(trackedFile =>
               trackedFile.file === file
                 ? {
-                    file,
-                    uploaded: event.loaded,
-                    size: event.total,
-                    progress: (event.loaded / event.total) * 100,
-                  }
+                  file,
+                  uploaded: event.loaded,
+                  size: event.total,
+                  progress: (event.loaded / event.total) * 100,
+                }
                 : trackedFile
             )
           );
         }
       });
 
-      let uploadResult = await s3Upload.promise();
+      await s3Upload.done();
+
+      const location = `https://s3.amazonaws.com/${data.bucket}/${data.key}`;
 
       return {
-        url: uploadResult.Location,
-        bucket: uploadResult.Bucket,
-        key: uploadResult.Key,
+        url: location,
+        bucket: data.bucket,
+        key: data.key,
       };
     }
   };

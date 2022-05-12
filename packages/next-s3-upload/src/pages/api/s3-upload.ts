@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import aws from 'aws-sdk';
+import { STSClient, GetFederationTokenCommand, STSClientConfig } from '@aws-sdk/client-sts';
 import { v4 as uuidv4 } from 'uuid';
 
 type NextRouteHandler = (
@@ -15,16 +15,18 @@ type Options = {
 };
 
 let makeRouteHandler = (options: Options = {}): Handler => {
-  let route: NextRouteHandler = async function(req, res) {
+  let route: NextRouteHandler = async function (req, res) {
     let missing = missingEnvs();
     if (missing.length > 0) {
       res
         .status(500)
         .json({ error: `Next S3 Upload: Missing ENVs ${missing.join(', ')}` });
     } else {
-      let config = {
-        accessKeyId: process.env.S3_UPLOAD_KEY,
-        secretAccessKey: process.env.S3_UPLOAD_SECRET,
+      let config: STSClientConfig = {
+        credentials: {
+          accessKeyId: process.env.S3_UPLOAD_KEY as string,
+          secretAccessKey: process.env.S3_UPLOAD_SECRET as string,
+        },
         region: process.env.S3_UPLOAD_REGION,
       };
 
@@ -46,15 +48,16 @@ let makeRouteHandler = (options: Options = {}): Handler => {
         ],
       };
 
-      let sts = new aws.STS(config);
+      let sts = new STSClient(config);
 
-      let token = await sts
-        .getFederationToken({
-          Name: 'S3UploadWebToken',
-          Policy: JSON.stringify(policy),
-          DurationSeconds: 60 * 60, // 1 hour
-        })
-        .promise();
+      let command = new GetFederationTokenCommand({
+        Name: 'S3UploadWebToken',
+        Policy: JSON.stringify(policy),
+        DurationSeconds: 60 * 60, // 1 hour
+      });
+
+
+      let token = await sts.send(command);
 
       res.statusCode = 200;
 
