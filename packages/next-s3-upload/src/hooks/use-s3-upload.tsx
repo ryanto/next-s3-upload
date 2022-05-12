@@ -1,7 +1,10 @@
 import React, { ChangeEvent, ReactElement } from 'react';
 import { useRef, useState } from 'react';
 import { forwardRef } from 'react';
-import { S3Client } from '@aws-sdk/client-s3';
+import {
+  CompleteMultipartUploadCommandOutput,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 
 type FileInputProps = {
@@ -13,7 +16,7 @@ type FileInputProps = {
 };
 
 let FileInput = forwardRef<HTMLInputElement, FileInputProps>(
-  ({ onChange = () => { }, ...restOfProps }, forwardedRef) => {
+  ({ onChange = () => {}, ...restOfProps }, forwardedRef) => {
     let handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
       let file = event.target?.files?.[0];
       onChange(file, event);
@@ -142,7 +145,7 @@ export const useS3Upload: UseS3Upload = (options = {}) => {
 
       let s3Upload = new Upload({
         client,
-        params
+        params,
       });
 
       setFiles(files => [
@@ -150,31 +153,32 @@ export const useS3Upload: UseS3Upload = (options = {}) => {
         { file, progress: 0, uploaded: 0, size: file.size },
       ]);
 
-      s3Upload.on('httpUploadProgress', (event: any) => {
-        if (event.total) {
+      s3Upload.on('httpUploadProgress', progress => {
+        let uploaded = progress.loaded ?? 0;
+        let size = progress.total ?? 0;
+
+        if (uploaded) {
           setFiles(files =>
             files.map(trackedFile =>
               trackedFile.file === file
                 ? {
-                  file,
-                  uploaded: event.loaded,
-                  size: event.total,
-                  progress: (event.loaded / event.total) * 100,
-                }
+                    file,
+                    uploaded,
+                    size,
+                    progress: size ? (uploaded / size) * 100 : 0,
+                  }
                 : trackedFile
             )
           );
         }
       });
 
-      await s3Upload.done();
-
-      const location = `https://s3.amazonaws.com/${data.bucket}/${data.key}`;
+      let uploadResult = (await s3Upload.done()) as CompleteMultipartUploadCommandOutput;
 
       return {
-        url: location,
-        bucket: data.bucket,
-        key: data.key,
+        url: uploadResult.Location ?? '',
+        bucket: uploadResult.Bucket ?? '',
+        key: uploadResult.Key ?? '',
       };
     }
   };

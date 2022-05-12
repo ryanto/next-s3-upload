@@ -1,5 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { STSClient, GetFederationTokenCommand, STSClientConfig } from '@aws-sdk/client-sts';
+import {
+  STSClient,
+  GetFederationTokenCommand,
+  STSClientConfig,
+} from '@aws-sdk/client-sts';
 import { v4 as uuidv4 } from 'uuid';
 
 type NextRouteHandler = (
@@ -15,7 +19,7 @@ type Options = {
 };
 
 let makeRouteHandler = (options: Options = {}): Handler => {
-  let route: NextRouteHandler = async function (req, res) {
+  let route: NextRouteHandler = async function(req, res) {
     let missing = missingEnvs();
     if (missing.length > 0) {
       res
@@ -56,9 +60,7 @@ let makeRouteHandler = (options: Options = {}): Handler => {
         DurationSeconds: 60 * 60, // 1 hour
       });
 
-
       let token = await sts.send(command);
-
       res.statusCode = 200;
 
       res.status(200).json({
