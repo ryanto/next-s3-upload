@@ -1,7 +1,11 @@
 import React, { ChangeEvent, ReactElement } from 'react';
 import { useRef, useState } from 'react';
 import { forwardRef } from 'react';
-import S3 from 'aws-sdk/clients/s3';
+import {
+  CompleteMultipartUploadCommandOutput,
+  S3Client,
+} from '@aws-sdk/client-s3';
+import { Upload } from '@aws-sdk/lib-storage';
 
 type FileInputProps = {
   onChange: (
@@ -116,10 +120,12 @@ export const useS3Upload: UseS3Upload = (options = {}) => {
       console.error(data.error);
       throw data.error;
     } else {
-      let s3 = new S3({
-        accessKeyId: data.token.Credentials.AccessKeyId,
-        secretAccessKey: data.token.Credentials.SecretAccessKey,
-        sessionToken: data.token.Credentials.SessionToken,
+      let client = new S3Client({
+        credentials: {
+          accessKeyId: data.token.Credentials.AccessKeyId,
+          secretAccessKey: data.token.Credentials.SecretAccessKey,
+          sessionToken: data.token.Credentials.SessionToken,
+        },
         region: data.region,
       });
 
@@ -137,23 +143,29 @@ export const useS3Upload: UseS3Upload = (options = {}) => {
       //   queueSize: 1,
       // };
 
-      let s3Upload = s3.upload(params);
+      let s3Upload = new Upload({
+        client,
+        params,
+      });
 
       setFiles(files => [
         ...files,
         { file, progress: 0, uploaded: 0, size: file.size },
       ]);
 
-      s3Upload.on('httpUploadProgress', event => {
-        if (event.total) {
+      s3Upload.on('httpUploadProgress', progress => {
+        let uploaded = progress.loaded ?? 0;
+        let size = progress.total ?? 0;
+
+        if (uploaded) {
           setFiles(files =>
             files.map(trackedFile =>
               trackedFile.file === file
                 ? {
                     file,
-                    uploaded: event.loaded,
-                    size: event.total,
-                    progress: (event.loaded / event.total) * 100,
+                    uploaded,
+                    size,
+                    progress: size ? (uploaded / size) * 100 : 0,
                   }
                 : trackedFile
             )
@@ -161,12 +173,12 @@ export const useS3Upload: UseS3Upload = (options = {}) => {
         }
       });
 
-      let uploadResult = await s3Upload.promise();
+      let uploadResult = (await s3Upload.done()) as CompleteMultipartUploadCommandOutput;
 
       return {
-        url: uploadResult.Location,
-        bucket: uploadResult.Bucket,
-        key: uploadResult.Key,
+        url: uploadResult.Location ?? '',
+        bucket: uploadResult.Bucket ?? '',
+        key: uploadResult.Key ?? '',
       };
     }
   };
