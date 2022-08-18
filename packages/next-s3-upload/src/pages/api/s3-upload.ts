@@ -18,6 +18,8 @@ type Options = {
   key?: (req: NextApiRequest, filename: string) => string | Promise<string>;
 };
 
+export const uuid = () => uuidv4();
+
 let makeRouteHandler = (options: Options = {}): Handler => {
   let route: NextRouteHandler = async function(req, res) {
     let missing = missingEnvs();
