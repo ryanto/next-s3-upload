@@ -4,7 +4,13 @@ The `useS3Upload` hook returns items needed to coordinate the upload.
 
 ```jsx
 const Component = () => {
-  let { FileInput, openFileDialog, uploadToS3, files } = useS3Upload();
+  let {
+    FileInput,
+    openFileDialog,
+    uploadToS3,
+    files,
+    resetFiles
+  } = useS3Upload();
 
   // ...
 };
@@ -13,9 +19,10 @@ const Component = () => {
 | Return value       | Description                                                                                                                      |
 | ------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
 | `FileInput`        | A component that renders a hidden file input. It needs to be rendered on the page in order to coordinate file access.            |
-| `openFileDialog`   | A function that opens the browser's select a file dialog. Once a file is selected the `FileInput`'s `onChange` action will fire. |
+| `openFileDialog()` | A function that opens the browser's select a file dialog. Once a file is selected the `FileInput`'s `onChange` action will fire. |
 | `uploadToS3(file)` | A function that will upload a file from a file input to your S3 bucket. For details on options, see uploadToS3 options below.    |
 | `files`            | Any array of files objects, see `Files` below.                                                                                   |
+| `resetFiles()`     | A function that will remove all files from the `files` array.                                                                    |
 
 ## uploadToS3 Options
 

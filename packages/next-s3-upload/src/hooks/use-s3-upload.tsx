@@ -73,9 +73,6 @@ type UseS3UploadTools = {
   openFileDialog: () => void;
   uploadToS3: UploadToS3;
   files: TrackedFile[];
-  /**
-   * Use this to clear all files from the state.
-   */
   resetFiles: () => void;
 };
 

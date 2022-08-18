@@ -3,6 +3,7 @@
   "workspaces": ["packages/next-s3-upload", "packages/docs-site"],
   "scripts": {
     "dev": "yarn workspace next-s3-upload start",
-    "docs": "yarn workspace docs-site dev"
+    "docs": "yarn workspace docs-site dev",
+    "test": "yarn workspace docs-site cypress run"
   }
 }
