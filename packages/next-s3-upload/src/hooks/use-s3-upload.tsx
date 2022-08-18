@@ -73,6 +73,10 @@ type UseS3UploadTools = {
   openFileDialog: () => void;
   uploadToS3: UploadToS3;
   files: TrackedFile[];
+  /**
+   * Use this to clear all files from the state.
+   */
+  resetFiles: () => void;
 };
 
 type UseS3Upload = (options?: UseS3UploadOptions) => UseS3UploadTools;
@@ -86,6 +90,10 @@ export const useS3Upload: UseS3Upload = (options = {}) => {
       ref.current.value = '';
       ref.current?.click();
     }
+  };
+
+  let resetFiles = () => {
+    setFiles([]);
   };
 
   let endpoint = options.endpoint ?? '/api/s3-upload';
@@ -190,5 +198,6 @@ export const useS3Upload: UseS3Upload = (options = {}) => {
     openFileDialog,
     uploadToS3,
     files,
+    resetFiles,
   };
 };
