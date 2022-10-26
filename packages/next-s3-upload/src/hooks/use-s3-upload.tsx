@@ -180,8 +180,13 @@ export const useS3Upload: UseS3Upload = (options = {}) => {
 
       let uploadResult = (await s3Upload.done()) as CompleteMultipartUploadCommandOutput;
 
+      let url =
+        uploadResult.Bucket && uploadResult.Key
+          ? `https://${uploadResult.Bucket}.s3.${data.region}.amazonaws.com/${uploadResult.Key}`
+          : '';
+
       return {
-        url: uploadResult.Location ?? '',
+        url,
         bucket: uploadResult.Bucket ?? '',
         key: uploadResult.Key ?? '',
       };
