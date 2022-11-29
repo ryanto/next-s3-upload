@@ -63,15 +63,15 @@ export default function UploadComponent() {
 
 Since our uploads are not publicly accessible, users will see an access denied error if they try to access the `url` for an uploaded file.
 
-In the next section we'll setup an API route that gives users of the application access to their uploads.
+In the next section we'll setup an API route that gives users access to their uploads.
 
 ## Generating temporary access URLs
 
 Access is granted to uploads using a temporary URL that expires after one hour.
 
-Next-s3-upload comes with a helper, `generateTemporaryUrl`, that takes an S3 key and generates a signed URL that allows a user to access an upload.
+Next-s3-upload comes with a helper, `generateTemporaryUrl`, that takes a S3 key and generates a signed URL that allows a user to access the upload.
 
-`generateTemporaryUrl` can only be called from the server, so the frontend will have to make an request to an API route in order to get the temporary URL.
+`generateTemporaryUrl` can only be called from the server, so the frontend will have to make a request to an API route in order to get the temporary URL.
 
 The API route:
 
