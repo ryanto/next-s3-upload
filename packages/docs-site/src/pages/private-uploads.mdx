@@ -1,0 +1,156 @@
+# Private uploads
+
+With next-s3-upload every upload generates a unique URL on S3. For example, if a user uploads `photo.jpg`, the uploaded file will live at `https://bucket.s3.amazonaws.com/next-s3-uploads/61e80089-ede1-442f-a6f6-5854d66fd4f6/photo.jpg`.
+
+At first glance these URLs might look completely random and secure, but at the end of the day they are public and [anyone can access them](https://security.stackexchange.com/questions/53458/is-it-safe-to-rely-on-uuids-for-privacy) if they know the URL.
+
+When uploading profile photos and sharable videos this URL scheme works well because these uploads are meant to be public and accessible by everyone.
+
+However, you might have some uploads like bank account statements that should only be accessible for certain users.
+
+This guide will show you how to setup your S3 bucket with private uploads that can only be accessed by authorized users.
+
+## Private S3 bucket
+
+First, we need to block all public access to the S3 bucket. In your S3 bucket, go to the permissions tab and click the "Edit" button in the "Block all public access" section.
+
+![Edit block public access](/edit-block-public-access.png)
+
+Check the "Block _all_ public access" box and save changes.
+
+![Block all public access](/block-all-public-access.png)
+
+Next, we need to remove the bucket policy.
+
+Click the "Edit" button in the "Bucket policy" section.
+
+![Edit bucket policy](/edit-bucket-policy.png)
+
+And delete everything from the text area.
+
+![Clear bucket policy](/clear-bucket-policy.png)
+
+Finally, save the policy.
+
+## Accessing uploads
+
+Now, by default, no files in the S3 bucket are downloadable. Users can upload files, but those uploads cannot be downloaded or viewed by anyone unless they've been given explicit access.
+
+The process for uploading is unchanged. Users can continue to [upload files like normal](/basic-example).
+
+```jsx
+// frontend component
+
+import { useS3Upload } from "next-s3-upload";
+
+export default function UploadComponent() {
+  let { FileInput, openFileDialog, uploadToS3 } = useS3Upload();
+
+  let handleFileChange = async file => {
+    let { url, key } = await uploadToS3(file);
+    // the upload worked! but if you try to
+    // access `url` you'll get an access denied error!
+  };
+
+  return (
+    <div>
+      <FileInput onChange={handleFileChange} />
+      <button onClick={openFileDialog}>Upload file</button>
+    </div>
+  );
+}
+```
+
+Since our uploads are not publicly accessible, users will see an access denied error if they try to access the `url` for an uploaded file.
+
+In the next section we'll setup an API route that gives users access to their uploads.
+
+## Generating temporary access URLs
+
+Access is granted to uploads using a temporary URL that expires after one hour.
+
+Next-s3-upload comes with a helper, `generateTemporaryUrl`, that takes a S3 key and generates a signed URL that allows a user to access the upload.
+
+`generateTemporaryUrl` can only be called from the server, so the frontend will have to make a request to an API route in order to get the temporary URL.
+
+The API route:
+
+```js
+// pages/api/generate-temporary-url.js
+
+// http://my-next-app/api/generate-temporary-url?key=file-on-s3
+// returns { temporaryUrl: "..." }
+
+import { generateTemporaryUrl } from "next-s3-upload";
+
+export default async function GenerateTemporaryUrlHandler(req, res) {
+  let key = req.query.key;
+  let temporaryUrl = await generateTemporaryUrl(key);
+
+  res.status(200).json({ temporaryUrl });
+}
+```
+
+And here's how the frontend can request a temporary URL after uploading a file.
+
+```jsx
+// frontend component
+
+import { useS3Upload } from "next-s3-upload";
+
+export default function UploadComponent() {
+  let { FileInput, openFileDialog, uploadToS3 } = useS3Upload();
+
+  let handleFileChange = async file => {
+    let { key } = await uploadToS3(file);
+
+    let response = await fetch(`/api/generate-temporary-url?key=${key}`);
+    let { temporaryUrl } = await response.json();
+
+    console.log("The upload can be accessed at", temporaryUrl);
+  };
+
+  return (
+    <div>
+      <FileInput onChange={handleFileChange} />
+      <button onClick={openFileDialog}>Upload file</button>
+    </div>
+  );
+}
+```
+
+Note: Generating these URLs requires access to your private AWS keys, so it can only be done in a secure context like an API route. The React frontend code cannot generate these URLs on its own, it will always have to ask the server to do it.
+
+## Guarding access
+
+To prevent anyone from generating these temporary URLs you can add an auth check to the API route:
+
+```js
+// pages/api/generate-temporary-url.js
+
+import { generateTemporaryUrl } from "next-s3-upload";
+
+export default async function GenerateTemporaryUrlHandler(req, res) {
+  let user = await getUserFromRequest(user);
+
+  // Make sure the user is an admin before giving them a temporary url!
+  if (user.isAdmin) {
+    let key = req.query.key;
+    let temporaryUrl = await generateTemporaryUrl(key);
+
+    res.status(200).json({ temporaryUrl });
+  } else {
+    res.status(401).json({ error: "Not authorized" });
+  }
+}
+```
+
+## Limitations
+
+These temporary URLs can only be accessed for one hour after they are generated. It's best to generate these URLs as your users need to access the files. Do not generate these URLs at build time or in static pages.
+
+A temporary url cannot be invalidated. Once it's generated anyone can use it for the next hour.
+
+## Other ways to access private uploads
+
+If you do not want to generate temporary URLs, you can always download the files from your S3 bucket using the AWS admin console or the AWS SDK.
