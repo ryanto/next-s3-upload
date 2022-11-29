@@ -66,8 +66,11 @@ export default function({ children, tableOfContents }) {
             S3 configuration
           </h6>
           <ul>
-            <li className="pt-1 pb-1 mt-1 border-l border-gray-200">
+            <li className="pt-1 mt-1 border-l border-gray-200">
               <DocLink href="/s3-file-paths">File paths</DocLink>
+            </li>
+            <li className="pt-1 pb-1 border-l border-gray-200">
+              <DocLink href="/private-uploads">Private uploads</DocLink>
             </li>
             {/* <li className="pt-1 pb-1 border-l border-gray-200">
               <DocLink href="/custom-file-input">Deleting files</DocLink>
