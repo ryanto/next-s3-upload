@@ -2,7 +2,7 @@
 
 [![Next S3 Upload](https://next-s3-upload.codingvalue.com/og-image.png)](https://next-s3-upload.codingvalue.com/)
 
-The easiest way to upload files from a Next.js app to S3.
+The fastest way to upload files from a Next.js app to S3.
 
 ## Documentation
 
