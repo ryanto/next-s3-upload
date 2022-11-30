@@ -96,7 +96,7 @@ export const useS3Upload: UseS3Upload = (options = {}) => {
   let endpoint = options.endpoint ?? '/api/s3-upload';
 
   let uploadToS3: UploadToS3 = async (file, options = {}) => {
-    let filename = encodeURIComponent(file.name);
+    let filename = file.name;
 
     let requestExtras = options?.endpoint?.request ?? {
       headers: {},
