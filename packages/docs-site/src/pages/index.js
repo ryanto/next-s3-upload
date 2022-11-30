@@ -57,7 +57,7 @@ export default function Home() {
 
           <div className="flex items-center justify-center pb-12 mt-12 md:mt-16 md:pb-24">
             <Link href="/setup">
-              <a className="bg-gradient-to-r from-purple-600 to-sky-600 inline-flex items-center px-6 py-3 text-xl font-medium text-white  border border-transparent rounded-md shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+              <a className="bg-gradient-to-r from-purple-600 to-sky-600 inline-flex items-center px-6 py-3 text-xl font-medium text-white rounded-md shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
                 Get started
                 <ArrowSmRightIcon
                   className="ml-3 -mr-1 h-7 w-7"
