@@ -24,7 +24,7 @@ export default function Home() {
           <div className="mx-4 mt-8 text-xl leading-8 text-center text-gray-500 lg:text-2xl lg:mt-12 sm:mx-0">
             The{" "}
             <em className="inline-block -rotate-3 px-2 sm:px-4 text-white py-0.5 sm:py-2.5 rounded bg-gradient-to-r from-purple-600 to-sky-600 -skew-x-12">
-              <span className="inline-block skew-x-12 rotate-3">easiest</span>
+              <span className="inline-block skew-x-12 rotate-3">fastest</span>
             </em>{" "}
             way to upload files from your Next.js app to S3.
           </div>
@@ -57,7 +57,7 @@ export default function Home() {
 
           <div className="flex items-center justify-center pb-12 mt-12 md:mt-16 md:pb-24">
             <Link href="/setup">
-              <a className="inline-flex items-center px-6 py-3 text-xl font-medium text-white bg-purple-600 border border-transparent rounded-md shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+              <a className="bg-gradient-to-r from-purple-600 to-sky-600 inline-flex items-center px-6 py-3 text-xl font-medium text-white  border border-transparent rounded-md shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
                 Get started
                 <ArrowSmRightIcon
                   className="ml-3 -mr-1 h-7 w-7"
