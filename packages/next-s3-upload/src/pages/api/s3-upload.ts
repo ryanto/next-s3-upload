@@ -5,6 +5,8 @@ import {
   STSClientConfig,
 } from '@aws-sdk/client-sts';
 import { v4 as uuidv4 } from 'uuid';
+import { S3Client } from '@aws-sdk/client-s3';
+import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
 
 type NextRouteHandler = (
   req: NextApiRequest,
@@ -32,51 +34,87 @@ let makeRouteHandler = (options: Options = {}): Handler => {
         .status(500)
         .json({ error: `Next S3 Upload: Missing ENVs ${missing.join(', ')}` });
     } else {
-      let config: STSClientConfig = {
-        credentials: {
-          accessKeyId: process.env.S3_UPLOAD_KEY as string,
-          secretAccessKey: process.env.S3_UPLOAD_SECRET as string,
-        },
-        region: process.env.S3_UPLOAD_REGION,
-      };
-
-      let bucket = process.env.S3_UPLOAD_BUCKET;
-
+      let uploadType = req.body._nextS3?.strategy;
       let filename = req.body.filename;
       let sanitizedFilename = safeKey(filename);
 
       let key = options.key
         ? await Promise.resolve(options.key(req, filename))
         : `next-s3-uploads/${uuidv4()}/${sanitizedFilename}`;
+      let bucket = process.env.S3_UPLOAD_BUCKET as string;
+      let region = process.env.S3_UPLOAD_REGION;
 
-      let policy = {
-        Statement: [
-          {
-            Sid: 'Stmt1S3UploadAssets',
-            Effect: 'Allow',
-            Action: ['s3:PutObject'],
-            Resource: [`arn:aws:s3:::${bucket}/${key}`],
+      if (uploadType === 'presigned') {
+        let filetype = req.body.filetype;
+
+        let s3Client = new S3Client({
+          credentials: {
+            accessKeyId: process.env.S3_UPLOAD_KEY as string,
+            secretAccessKey: process.env.S3_UPLOAD_SECRET as string,
           },
-        ],
-      };
+          region,
+        });
 
-      let sts = new STSClient(config);
+        let presignedPost = await createPresignedPost(s3Client, {
+          Bucket: bucket,
+          Key: key,
+          Fields: {
+            'Content-Type': filetype,
+          },
+          Expires: 60 * 60, // 1 hour
+        });
 
-      let command = new GetFederationTokenCommand({
-        Name: 'S3UploadWebToken',
-        Policy: JSON.stringify(policy),
-        DurationSeconds: 60 * 60, // 1 hour
-      });
+        res.status(200).json({
+          key,
+          bucket,
+          region,
+          presignedPost,
+        });
+      } else {
+        let config: STSClientConfig = {
+          credentials: {
+            accessKeyId: process.env.S3_UPLOAD_KEY as string,
+            secretAccessKey: process.env.S3_UPLOAD_SECRET as string,
+          },
+          region,
+        };
 
-      let token = await sts.send(command);
-      res.statusCode = 200;
+        let bucket = process.env.S3_UPLOAD_BUCKET;
 
-      res.status(200).json({
-        token,
-        key,
-        bucket,
-        region: process.env.S3_UPLOAD_REGION,
-      });
+        let filename = req.body.filename;
+        let key = options.key
+          ? await Promise.resolve(options.key(req, filename))
+          : `next-s3-uploads/${uuidv4()}/${filename.replace(/\s/g, '-')}`;
+
+        let policy = {
+          Statement: [
+            {
+              Sid: 'Stmt1S3UploadAssets',
+              Effect: 'Allow',
+              Action: ['s3:PutObject'],
+              Resource: [`arn:aws:s3:::${bucket}/${key}`],
+            },
+          ],
+        };
+
+        let sts = new STSClient(config);
+
+        let command = new GetFederationTokenCommand({
+          Name: 'S3UploadWebToken',
+          Policy: JSON.stringify(policy),
+          DurationSeconds: 60 * 60, // 1 hour
+        });
+
+        let token = await sts.send(command);
+        res.statusCode = 200;
+
+        res.status(200).json({
+          token,
+          key,
+          bucket,
+          region,
+        });
+      }
     }
   };
 

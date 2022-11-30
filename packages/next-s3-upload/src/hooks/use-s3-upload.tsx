@@ -105,6 +105,9 @@ export const useS3Upload: UseS3Upload = (options = {}) => {
 
     let body = {
       filename,
+      _nextS3: {
+        strategy: 'aws-sdk',
+      },
       ...requestExtras.body,
     };
 
