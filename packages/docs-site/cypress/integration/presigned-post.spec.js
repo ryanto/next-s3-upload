@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe("Form file input example", () => {
+describe("Presigned upload", () => {
   it("should be able to upload a file", () => {
     cy.visit("/examples/presigned-post");
 
