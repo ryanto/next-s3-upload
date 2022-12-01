@@ -20,6 +20,10 @@ type Options = {
 
 export const uuid = () => uuidv4();
 
+const SAFE_CHARACTERS = /[^0-9a-zA-Z!_\\.\\*'\\(\\)\\\-/]/g;
+const safeKey = (value: string) =>
+  value.replace(SAFE_CHARACTERS, ' ').replace(/\s+/g, '-');
+
 let makeRouteHandler = (options: Options = {}): Handler => {
   let route: NextRouteHandler = async function(req, res) {
     let missing = missingEnvs();
@@ -39,9 +43,11 @@ let makeRouteHandler = (options: Options = {}): Handler => {
       let bucket = process.env.S3_UPLOAD_BUCKET;
 
       let filename = req.body.filename;
+      let sanitizedFilename = safeKey(filename);
+
       let key = options.key
         ? await Promise.resolve(options.key(req, filename))
-        : `next-s3-uploads/${uuidv4()}/${filename.replace(/\s/g, '-')}`;
+        : `next-s3-uploads/${uuidv4()}/${sanitizedFilename}`;
 
       let policy = {
         Statement: [
