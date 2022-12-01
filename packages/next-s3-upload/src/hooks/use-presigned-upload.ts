@@ -1,7 +1,7 @@
 import { Uploader, useUploader } from './use-uploader';
 
 let upload: Uploader = async (file, params, { onProgress }) => {
-  let { presignedPost, key, bucket, region } = params;
+  let { presignedPost, key, bucket, region, endpoint } = params;
   let formData = new FormData();
 
   Object.entries({ ...presignedPost.fields, file }).forEach(
@@ -32,7 +32,9 @@ let upload: Uploader = async (file, params, { onProgress }) => {
     xhr.send(formData);
   });
 
-  let url = `https://${bucket}.s3.${region}.amazonaws.com/${key}`;
+  let url = endpoint
+    ? `${endpoint}/${key}`
+    : `https://${bucket}.s3.${region}.amazonaws.com/${key}`;
 
   return {
     url,

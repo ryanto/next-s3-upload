@@ -17,6 +17,11 @@ type Configure = (options: Options) => Handler;
 type Handler = NextRouteHandler & { configure: Configure };
 
 type Options = {
+  accessKeyId?: string;
+  secretAccessKey?: string;
+  bucket?: string;
+  region?: string;
+  endpoint?: string;
   key?: (req: NextApiRequest, filename: string) => string | Promise<string>;
 };
 
@@ -28,7 +33,16 @@ const safeKey = (value: string) =>
 
 let makeRouteHandler = (options: Options = {}): Handler => {
   let route: NextRouteHandler = async function(req, res) {
-    let missing = missingEnvs();
+    let config = {
+      accessKeyId: options.accessKeyId ?? `${process.env.S3_UPLOAD_KEY}`,
+      secretAccessKey:
+        options.secretAccessKey ?? `${process.env.S3_UPLOAD_SECRET}`,
+      bucket: options.bucket ?? `${process.env.S3_UPLOAD_BUCKET}`,
+      region: options.region ?? `${process.env.S3_UPLOAD_REGION}`,
+      endpoint: options.endpoint,
+    };
+
+    let missing = missingEnvs(config);
     if (missing.length > 0) {
       res
         .status(500)
@@ -41,18 +55,18 @@ let makeRouteHandler = (options: Options = {}): Handler => {
       let key = options.key
         ? await Promise.resolve(options.key(req, filename))
         : `next-s3-uploads/${uuidv4()}/${sanitizedFilename}`;
-      let bucket = process.env.S3_UPLOAD_BUCKET as string;
-      let region = process.env.S3_UPLOAD_REGION;
+      let { bucket, region, endpoint } = config;
 
       if (uploadType === 'presigned') {
         let filetype = req.body.filetype;
 
         let s3Client = new S3Client({
           credentials: {
-            accessKeyId: process.env.S3_UPLOAD_KEY as string,
-            secretAccessKey: process.env.S3_UPLOAD_SECRET as string,
+            accessKeyId: config.accessKeyId,
+            secretAccessKey: config.secretAccessKey,
           },
           region,
+          ...(config.endpoint ? { endpoint: config.endpoint } : {}),
         });
 
         let presignedPost = await createPresignedPost(s3Client, {
@@ -68,23 +82,17 @@ let makeRouteHandler = (options: Options = {}): Handler => {
           key,
           bucket,
           region,
+          endpoint,
           presignedPost,
         });
       } else {
-        let config: STSClientConfig = {
+        let stsConfig: STSClientConfig = {
           credentials: {
-            accessKeyId: process.env.S3_UPLOAD_KEY as string,
-            secretAccessKey: process.env.S3_UPLOAD_SECRET as string,
+            accessKeyId: config.accessKeyId,
+            secretAccessKey: config.secretAccessKey,
           },
           region,
         };
-
-        let bucket = process.env.S3_UPLOAD_BUCKET;
-
-        let filename = req.body.filename;
-        let key = options.key
-          ? await Promise.resolve(options.key(req, filename))
-          : `next-s3-uploads/${uuidv4()}/${filename.replace(/\s/g, '-')}`;
 
         let policy = {
           Statement: [
@@ -97,7 +105,7 @@ let makeRouteHandler = (options: Options = {}): Handler => {
           ],
         };
 
-        let sts = new STSClient(config);
+        let sts = new STSClient(stsConfig);
 
         let command = new GetFederationTokenCommand({
           Name: 'S3UploadWebToken',
@@ -106,7 +114,6 @@ let makeRouteHandler = (options: Options = {}): Handler => {
         });
 
         let token = await sts.send(command);
-        res.statusCode = 200;
 
         res.status(200).json({
           token,
@@ -129,21 +136,10 @@ let makeRouteHandler = (options: Options = {}): Handler => {
 // Why does this code look like this? See this issue!
 // https://github.com/ryanto/next-s3-upload/issues/50
 //
-let missingEnvs = (): string[] => {
-  let keys = [];
-  if (!process.env.S3_UPLOAD_KEY) {
-    keys.push('S3_UPLOAD_KEY');
-  }
-  if (!process.env.S3_UPLOAD_SECRET) {
-    keys.push('S3_UPLOAD_SECRET');
-  }
-  if (!process.env.S3_UPLOAD_REGION) {
-    keys.push('S3_UPLOAD_REGION');
-  }
-  if (!process.env.S3_UPLOAD_BUCKET) {
-    keys.push('S3_UPLOAD_BUCKET');
-  }
-  return keys;
+let missingEnvs = (config: Record<string, any>): string[] => {
+  let required = ['accessKeyId', 'secretAccessKey', 'bucket', 'region'];
+
+  return required.filter(key => !config[key] || config.key === '');
 };
 
 let APIRoute = makeRouteHandler();
