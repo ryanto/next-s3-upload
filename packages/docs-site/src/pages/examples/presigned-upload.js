@@ -1,9 +1,9 @@
-import { useS3Upload } from "next-s3-upload";
+import { usePresignedUpload } from "next-s3-upload";
 import { useState } from "react";
 
 export default function UploadTest() {
   let [imageUrl, setImageUrl] = useState();
-  let { uploadToS3, files } = useS3Upload();
+  let { uploadToS3, files } = usePresignedUpload();
 
   let handleSubmit = async event => {
     event.preventDefault();
@@ -21,7 +21,6 @@ export default function UploadTest() {
           data-test="file-input"
           className="block"
         />
-
         <button>Start upload</button>
       </form>
       <div className="pt-8">

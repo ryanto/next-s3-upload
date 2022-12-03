@@ -1,17 +1,17 @@
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+import { GetObjectCommand } from '@aws-sdk/client-s3';
+import { getConfig, S3Config } from './config';
+import { getClient } from './client';
 
-export const generateTemporaryUrl = async (key: string) => {
-  let client = new S3Client({
-    credentials: {
-      accessKeyId: process.env.S3_UPLOAD_KEY as string,
-      secretAccessKey: process.env.S3_UPLOAD_SECRET as string,
-    },
-    region: process.env.S3_UPLOAD_REGION,
-  });
+export const generateTemporaryUrl = async (
+  key: string,
+  s3Config?: S3Config
+) => {
+  let config = getConfig(s3Config);
+  let client = getClient(s3Config);
 
   let command = new GetObjectCommand({
-    Bucket: process.env.S3_UPLOAD_BUCKET,
+    Bucket: config.bucket,
     Key: key,
   });
 

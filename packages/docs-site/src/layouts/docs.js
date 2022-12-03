@@ -58,8 +58,11 @@ export default function({ children, tableOfContents }) {
             <li className="pt-1 border-l border-gray-200">
               <DocLink href="/multi-file-uploads">Multiple files</DocLink>
             </li>
-            <li className="pt-1 pb-1 border-l border-gray-200">
+            <li className="pt-1 border-l border-gray-200">
               <DocLink href="/custom-file-input">Custom file input</DocLink>
+            </li>
+            <li className="pt-1 pb-1 border-l border-gray-200">
+              <DocLink href="/presigned-uploads">Presigned uploads</DocLink>
             </li>
           </ul>
           <h6 className="mt-8 text-sm font-semibold text-gray-900">
