@@ -1,6 +1,5 @@
 import { usePresignedUpload } from "next-s3-upload";
-import { useState } from "react";
-import { useSignedUrl } from "./hooks/use-signed-url";
+import { useEffect, useState } from "react";
 
 export default function UploadTest() {
   let [key, setKey] = useState();
@@ -37,3 +36,25 @@ export default function UploadTest() {
     </div>
   );
 }
+
+let useSignedUrl = (key, config = "aws") => {
+  let [url, setUrl] = useState();
+
+  useEffect(() => {
+    let f = async () => {
+      if (key) {
+        let response = await fetch(
+          `/api/generate-temporary-url?key=${key}&config=${config}`
+        );
+        let json = await response.json();
+        setUrl(json.temporaryUrl);
+      } else {
+        setUrl(null);
+      }
+    };
+
+    f();
+  }, [key, config]);
+
+  return url;
+};
