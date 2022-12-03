@@ -4,11 +4,11 @@ import {
   GetFederationTokenCommand,
   STSClientConfig,
 } from '@aws-sdk/client-sts';
-import { v4 as uuidv4 } from 'uuid';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { getConfig, S3Config } from '../../utils/config';
 import { getClient } from '../../utils/client';
+import { sanitizeKey, uuid } from '../../utils/keys';
 
 type NextRouteHandler = (
   req: NextApiRequest,
@@ -21,12 +21,6 @@ type Handler = NextRouteHandler & { configure: Configure };
 type Options = S3Config & {
   key?: (req: NextApiRequest, filename: string) => string | Promise<string>;
 };
-
-export const uuid = () => uuidv4();
-
-const SAFE_CHARACTERS = /[^0-9a-zA-Z!_\\.\\*'\\(\\)\\\-/]/g;
-const safeKey = (value: string) =>
-  value.replace(SAFE_CHARACTERS, ' ').replace(/\s+/g, '-');
 
 let makeRouteHandler = (options: Options = {}): Handler => {
   let route: NextRouteHandler = async function(req, res) {
@@ -46,11 +40,10 @@ let makeRouteHandler = (options: Options = {}): Handler => {
     } else {
       let uploadType = req.body._nextS3?.strategy;
       let filename = req.body.filename;
-      let sanitizedFilename = safeKey(filename);
 
       let key = options.key
         ? await Promise.resolve(options.key(req, filename))
-        : `next-s3-uploads/${uuidv4()}/${sanitizedFilename}`;
+        : `next-s3-uploads/${uuid()}/${sanitizeKey(filename)}`;
       let { bucket, region, endpoint } = config;
 
       if (uploadType === 'presigned') {

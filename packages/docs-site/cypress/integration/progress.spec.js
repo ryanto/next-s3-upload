@@ -5,6 +5,9 @@ describe("Tracking progress", () => {
     cy.visit("/examples/progress");
 
     cy.get("[data-test=file-input]").attachFile("woods.jpg");
+    cy.get("button")
+      .contains("Start upload")
+      .click();
 
     cy.get("[data-test=progress]").should("be.visible");
 

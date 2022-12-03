@@ -5,20 +5,25 @@ export default function UploadTest() {
   let [imageUrl, setImageUrl] = useState();
   let { uploadToS3, files } = useS3Upload();
 
-  let handleFileChange = async ({ target }) => {
-    let file = target.files[0];
+  let handleSubmit = async event => {
+    event.preventDefault();
+    let file = event.target.image.files[0];
     let { url } = await uploadToS3(file);
     setImageUrl(url);
   };
 
   return (
     <div className="flex flex-col h-screen p-6">
-      <input
-        onChange={handleFileChange}
-        type="file"
-        data-test="file-input"
-        className="block"
-      />
+      <form onSubmit={handleSubmit}>
+        <input
+          name="image"
+          type="file"
+          data-test="file-input"
+          className="block"
+        />
+
+        <button>Start upload</button>
+      </form>
       <div className="pt-8">
         {files[0]?.progress ? (
           <span data-test="progress">Progress {files[0]?.progress}%</span>
