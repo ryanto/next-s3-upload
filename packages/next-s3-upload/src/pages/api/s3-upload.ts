@@ -5,9 +5,10 @@ import {
   STSClientConfig,
 } from '@aws-sdk/client-sts';
 import { v4 as uuidv4 } from 'uuid';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { S3Config } from '../../types/types';
+import { getConfig, S3Config } from '../../utils/config';
+import { getClient } from '../../utils/client';
 
 type NextRouteHandler = (
   req: NextApiRequest,
@@ -29,14 +30,13 @@ const safeKey = (value: string) =>
 
 let makeRouteHandler = (options: Options = {}): Handler => {
   let route: NextRouteHandler = async function(req, res) {
-    let config = {
-      accessKeyId: options.accessKeyId ?? `${process.env.S3_UPLOAD_KEY}`,
-      secretAccessKey:
-        options.secretAccessKey ?? `${process.env.S3_UPLOAD_SECRET}`,
-      bucket: options.bucket ?? `${process.env.S3_UPLOAD_BUCKET}`,
-      region: options.region ?? `${process.env.S3_UPLOAD_REGION}`,
+    let config = getConfig({
+      accessKeyId: options.accessKeyId,
+      secretAccessKey: options.secretAccessKey,
+      bucket: options.bucket,
+      region: options.region,
       endpoint: options.endpoint,
-    };
+    });
 
     let missing = missingEnvs(config);
     if (missing.length > 0) {
@@ -55,24 +55,15 @@ let makeRouteHandler = (options: Options = {}): Handler => {
 
       if (uploadType === 'presigned') {
         let filetype = req.body.filetype;
-
-        let s3Client = new S3Client({
-          credentials: {
-            accessKeyId: config.accessKeyId,
-            secretAccessKey: config.secretAccessKey,
-          },
-          region,
-          ...(config.endpoint ? { endpoint: config.endpoint } : {}),
-        });
-
-        const params = {
+        let client = getClient(config);
+        let params = {
           Bucket: bucket,
           Key: key,
           ContentType: filetype,
           CacheControl: 'max-age=630720000',
         };
 
-        const url = await getSignedUrl(s3Client, new PutObjectCommand(params), {
+        const url = await getSignedUrl(client, new PutObjectCommand(params), {
           expiresIn: 60 * 60,
         });
 
@@ -128,12 +119,6 @@ let makeRouteHandler = (options: Options = {}): Handler => {
   return Object.assign(route, { configure });
 };
 
-// This code checks the for missing env vars that this
-// API route needs.
-//
-// Why does this code look like this? See this issue!
-// https://github.com/ryanto/next-s3-upload/issues/50
-//
 let missingEnvs = (config: Record<string, any>): string[] => {
   let required = ['accessKeyId', 'secretAccessKey', 'bucket', 'region'];
 
