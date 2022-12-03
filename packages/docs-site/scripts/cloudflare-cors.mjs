@@ -18,9 +18,7 @@ async function main() {
       CORSConfiguration: {
         CORSRules: new Array({
           AllowedHeaders: ["*"],
-          // AllowedHeaders: ["*"],
-          // AllowedHeaders: ["Content-Type"],
-          AllowedMethods: ["GET", "PUT", "POST", "HEAD"],
+          AllowedMethods: ["GET", "PUT", "POST", "HEAD", "DELETE"],
           AllowedOrigins: ["*"],
           ExposeHeaders: [],
           MaxAgeSeconds: 3000

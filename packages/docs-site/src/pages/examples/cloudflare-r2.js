@@ -1,21 +1,22 @@
 import { usePresignedUpload } from "next-s3-upload";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function UploadTest() {
-  let [imageUrl, setImageUrl] = useState();
+  let [key, setKey] = useState();
   let { uploadToS3 } = usePresignedUpload();
+  let url = useSignedUrl(key, "cloudflareR2");
 
   let handleSubmit = async event => {
     event.preventDefault();
     let file = event.target.image.files[0];
-    let { url } = await uploadToS3(file, {
+    let { key } = await uploadToS3(file, {
       endpoint: {
         request: {
           url: "/api/cloudflare-r2"
         }
       }
     });
-    setImageUrl(url);
+    setKey(key);
   };
 
   return (
@@ -30,10 +31,30 @@ export default function UploadTest() {
         <button>Start upload</button>
       </form>
       <div className="flex flex-1 pt-8 overflow-hidden">
-        {imageUrl && (
-          <img className="object-contain" src={imageUrl} data-test="image" />
-        )}
+        {url && <img className="object-contain" src={url} data-test="image" />}
       </div>
     </div>
   );
 }
+
+let useSignedUrl = (key, config = "aws") => {
+  let [url, setUrl] = useState();
+
+  useEffect(() => {
+    let f = async () => {
+      if (key) {
+        let response = await fetch(
+          `/api/generate-temporary-url?key=${key}&config=${config}`
+        );
+        let json = await response.json();
+        setUrl(json.temporaryUrl);
+      } else {
+        setUrl(null);
+      }
+    };
+
+    f();
+  }, [key, config]);
+
+  return url;
+};

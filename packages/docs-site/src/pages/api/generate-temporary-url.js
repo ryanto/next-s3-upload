@@ -7,6 +7,13 @@ let configs = {
     bucket: process.env.SPACES_BUCKET,
     region: "us-east-1",
     endpoint: "https://nyc3.digitaloceanspaces.com"
+  },
+  cloudflareR2: {
+    accessKeyId: process.env.R2_ACCESS_KEY_ID,
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+    bucket: process.env.R2_BUCKET,
+    region: "auto",
+    endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`
   }
 };
 

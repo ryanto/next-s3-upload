@@ -41,6 +41,10 @@ jobs:
       S3_UPLOAD_SECRET: ${{ secrets.S3_UPLOAD_SECRET }}
       S3_UPLOAD_BUCKET: next-uploads-1
       S3_UPLOAD_REGION: us-east-1
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      R2_BUCKET: next-s3-upload 
       SPACES_KEY: ${{ secrets.SPACES_KEY }}
       SPACES_SECRET: ${{ secrets.SPACES_SECRET }}
       SPACES_BUCKET: next-s3-upload
