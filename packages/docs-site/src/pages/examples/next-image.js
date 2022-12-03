@@ -8,8 +8,9 @@ export default function UploadTest() {
   let [width, setWidth] = useState();
   let { uploadToS3 } = useS3Upload();
 
-  const handleFileChange = async ({ target }) => {
-    let file = target.files[0];
+  const handleSubmit = async event => {
+    event.preventDefault();
+    let file = event.target.image.files[0];
     let { url } = await uploadToS3(file);
     let { height, width } = await getImageData(file);
     setWidth(width);
@@ -19,12 +20,16 @@ export default function UploadTest() {
 
   return (
     <div>
-      <input
-        type="file"
-        name="file"
-        data-test="file-input"
-        onChange={handleFileChange}
-      />
+      <form onSubmit={handleSubmit}>
+        <input
+          type="file"
+          name="image"
+          data-test="file-input"
+          className="block"
+        />
+
+        <button>Start upload</button>
+      </form>
 
       {imageUrl && (
         <div className="flex space-x-6">

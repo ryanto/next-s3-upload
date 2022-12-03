@@ -5,6 +5,9 @@ describe("Next/image example", () => {
     cy.visit("/examples/next-image");
 
     cy.get("[data-test=file-input]").attachFile("woods.jpg");
+    cy.get("button")
+      .contains("Start upload")
+      .click();
 
     cy.get("[data-test=image]").imageHasLoaded();
 
