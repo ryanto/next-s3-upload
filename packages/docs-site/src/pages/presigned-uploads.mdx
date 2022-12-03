@@ -1,0 +1,57 @@
+# Presigned uploads
+
+This library, and the `useS3Upload()` hook, rely on the AWS SDK to upload files to S3. There are quite a few benefits to using the SDK, such as splitting uploads into multiple parts, handling failures and retries automatically, and support for uploading large files.
+
+While it is recommended to use the AWS SDK, there are some potential downsides to be aware of. The main complaint against the AWS SDK is that your frontend needs to now load an additional JavaScript library.
+
+Next-s3-upload has the ability to upload files to S3 without using the AWS SDK. It does this by having the browser send a `PUT` request containing the file's contents. This type of upload is often referred to as a presigned upload.
+
+This guide will show you how to upload files to S3 using presigned uploads.
+
+## `usePresignedUpload`
+
+The `usePresignedUpload` hook has the same functionality as the `useS3Upload` hook, but it instead preforms an upload without loading or using the AWS SDK.
+
+In this example, we'll upload an image to S3 using a presigned upload.
+
+```jsx
+import { useState } from "react";
+import { usePresignedUpload } from "next-s3-upload";
+
+export default function UploadComponent() {
+  let [imageUrl, setImageUrl] = useState();
+
+  // instead of useS3Upload, we'll import and use the
+  // usePresignedUpload hook
+  let { FileInput, openFileDialog, uploadToS3 } = usePresignedUpload();
+
+  let handleFileChange = async file => {
+    let { url } = await uploadToS3(file);
+    setImageUrl(url);
+  };
+
+  return (
+    <div>
+      <FileInput onChange={handleFileChange} />
+
+      <button onClick={openFileDialog}>Upload file</button>
+
+      {imageUrl && <img src={imageUrl} />}
+    </div>
+  );
+}
+```
+
+Once the image is uploaded it will be displayed on the page.
+
+## When to use
+
+Unless you have a good reason to use presigned uploads it is recommended to use the AWS SDK when uploading files to S3.
+
+If you want to avoid loading the AWS SDK on the frontend end you should use presigned uploads. Websites that have strict bundle size requirements, or are cautious to load 3rd party libraries client side, should use presigned uploads.
+
+Another situation to use presigned uploads is when you are using a non-AWS web host. Most S3 compatible web hosts only support browser based uploads using presigned urls.
+
+## Limitations
+
+S3 will reject presigned uploads that are over 1GB in size. S3 requires using the AWS SDK when uploading large files.
