@@ -5,8 +5,9 @@ import {
   STSClientConfig,
 } from '@aws-sdk/client-sts';
 import { v4 as uuidv4 } from 'uuid';
-import { S3Client } from '@aws-sdk/client-s3';
-import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { S3Config } from '../../types/types';
 
 type NextRouteHandler = (
   req: NextApiRequest,
@@ -16,12 +17,7 @@ type NextRouteHandler = (
 type Configure = (options: Options) => Handler;
 type Handler = NextRouteHandler & { configure: Configure };
 
-type Options = {
-  accessKeyId?: string;
-  secretAccessKey?: string;
-  bucket?: string;
-  region?: string;
-  endpoint?: string;
+type Options = S3Config & {
   key?: (req: NextApiRequest, filename: string) => string | Promise<string>;
 };
 
@@ -69,13 +65,15 @@ let makeRouteHandler = (options: Options = {}): Handler => {
           ...(config.endpoint ? { endpoint: config.endpoint } : {}),
         });
 
-        let presignedPost = await createPresignedPost(s3Client, {
+        const params = {
           Bucket: bucket,
           Key: key,
-          Fields: {
-            'Content-Type': filetype,
-          },
-          Expires: 60 * 60, // 1 hour
+          ContentType: filetype,
+          CacheControl: 'max-age=630720000',
+        };
+
+        const url = await getSignedUrl(s3Client, new PutObjectCommand(params), {
+          expiresIn: 60 * 60,
         });
 
         res.status(200).json({
@@ -83,7 +81,7 @@ let makeRouteHandler = (options: Options = {}): Handler => {
           bucket,
           region,
           endpoint,
-          presignedPost,
+          url,
         });
       } else {
         let stsConfig: STSClientConfig = {
