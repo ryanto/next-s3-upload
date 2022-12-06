@@ -1,0 +1,46 @@
+# Bucket config
+
+This library works best when you set the following environment variables:
+
+```text
+S3_UPLOAD_KEY=AAAAAAAAAAAAAAAAAAAA
+S3_UPLOAD_SECRET=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+S3_UPLOAD_BUCKET=name-of-s3-bucket
+S3_UPLOAD_REGION=us-east-1
+```
+
+Once these ENVs are set no other configuration is needed. Next-s3-upload will automatically read these ENVs when uploading files.
+
+## Using other ENVs
+
+If you cannot define the environment variables from the previous section, you can create your own and pass them into the API route:
+
+```js
+// pages/api/s3-upload.js
+import { APIRoute } from "next-s3-upload";
+
+export default APIRoute.configure({
+  accessKeyId: process.env.CUSTOM_ENV_ACCESS_KEY_ID,
+  secretAccessKey: process.env.CUSTOM_ENV_SECRET_ACCESS_KEY,
+  bucket: "bucket-name",
+  region: "us-east-1"
+});
+```
+
+Remember to always store your `accessKeyId` and `secretAccessKey` in environment variables. It's a security risk to check-in the plain text version of these keys when using version control. Environment variables work best because they keep the actual values out of commit history.
+
+## Bucket endpoint
+
+You can also set the bucket endpoint using the API route. This is only needed if you are using a non-AWS host.
+
+```js
+// pages/api/s3-upload.js
+import { APIRoute } from "next-s3-upload";
+
+export default APIRoute.configure({
+  // ..
+  endpoint: "https://nyc3.digitaloceanspaces.com"
+});
+```
+
+Now your upload will work with any S3 compatible web host.
