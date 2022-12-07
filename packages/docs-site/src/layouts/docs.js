@@ -75,8 +75,11 @@ export default function({ children, tableOfContents }) {
             <li className="pt-1 border-l border-gray-200">
               <DocLink href="/private-uploads">Private uploads</DocLink>
             </li>
-            <li className="pt-1 pb-1 border-l border-gray-200">
+            <li className="pt-1 border-l border-gray-200">
               <DocLink href="/bucket-config">Bucket config</DocLink>
+            </li>
+            <li className="pt-1 pb-1 border-l border-gray-200">
+              <DocLink href="/other-providers">Other providers</DocLink>
             </li>
             {/* <li className="pt-1 pb-1 border-l border-gray-200">
               <DocLink href="/custom-file-input">Deleting files</DocLink>
