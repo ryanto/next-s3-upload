@@ -21,7 +21,7 @@ export default APIRoute.configure({
 });
 ```
 
-The configuration values used here will be different for everyone. Please refer to your providers documentation for the correct values.
+The configuration values used here will be different for everyone. Please refer to your provider's documentation for the correct values.
 
 Also, don't forget to setup environment variables for the API keys.
 
@@ -56,7 +56,7 @@ export default function UploadComponent() {
 
 Be sure to always use the `usePresignedUpload()` hook whenever you are uploading to a non-AWS provider. S3 compatible providers require you use presigned uploads when interacting with them.
 
-The `usePresignedUpload()` hook has [the same API](/use-s3-upload) as the `useS3Upload()` hook, the two can be used interchangeably.
+The `usePresignedUpload()` hook has [the same API](/use-s3-upload) as the `useS3Upload()` hook.
 
 You can learn more about [presigned uploads here](/presigned-uploads).
 
@@ -64,7 +64,7 @@ You can learn more about [presigned uploads here](/presigned-uploads).
 
 There are a handful of limitations to be aware of when using non-AWS providers:
 
-- Most providers do not support the full S3 API. Certain APIs or function calls may not work simply because your provider does not support them. You should always check with your host about what APIs and features they support.
+- Most providers do not support the full S3 API. Certain APIs or functions may not work simply because your provider does not support them. You should always check with your host about what APIs and features they support.
 
 - Every provider will have their own way of configuring CORS. If you are seeing CORS errors when uploading you should refer to your host's documentation on how to setup cross origin permissions.
 
