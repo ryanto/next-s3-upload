@@ -1,0 +1,80 @@
+# Other providers
+
+S3 has become one of the most popular storage services on the internet over the past two decades. This has caused non-AWS storage providers to support the S3 APIs.
+
+This guide will show you how to use next-S3-upload with non-AWS providers.
+
+## API Route
+
+First, customize the API route to use the access keys, bucket, region, and endpoint provided by your host. For example, a Digital Ocean Spaces setup may look something like this.
+
+```js
+// pages/api/s3-upload.js
+import { APIRoute } from "next-s3-upload";
+
+export default APIRoute.configure({
+  accessKeyId: process.env.DIGITAL_OCEAN_SPACES_KEY,
+  secretAccessKey: process.env.DIGITAL_OCEAN_SPACES_SECRET,
+  bucket: "name-of-bucket",
+  region: "us-east-1",
+  endpoint: "https://nyc3.digitaloceanspaces.com"
+});
+```
+
+The configuration values used here will be different for everyone. Please refer to your provider's documentation for the correct values.
+
+Also, don't forget to setup environment variables for the API keys.
+
+## Uploading files
+
+Your React components can now upload files using the `usePresignedUpload()` hook:
+
+```jsx
+import { useState } from "react";
+import { usePresignedUpload } from "next-s3-upload";
+
+export default function UploadComponent() {
+  let [imageUrl, setImageUrl] = useState();
+  let { FileInput, openFileDialog, uploadToS3 } = usePresignedUpload();
+
+  let handleFileChange = async file => {
+    let { url } = await uploadToS3(file);
+    setImageUrl(url);
+  };
+
+  return (
+    <div>
+      <FileInput onChange={handleFileChange} />
+
+      <button onClick={openFileDialog}>Upload file</button>
+
+      {imageUrl && <img src={imageUrl} />}
+    </div>
+  );
+}
+```
+
+Be sure to always use the `usePresignedUpload()` hook whenever you are uploading to a non-AWS provider. S3 compatible providers require you use presigned uploads when interacting with them.
+
+The `usePresignedUpload()` hook has [the same API](/use-s3-upload) as the `useS3Upload()` hook.
+
+You can learn more about [presigned uploads here](/presigned-uploads).
+
+## Limitations
+
+There are a handful of limitations to be aware of when using non-AWS providers:
+
+- Most providers do not support the full S3 API. Certain APIs or functions may not work simply because your provider does not support them. You should always check with your host about what APIs and features they support.
+
+- Every provider will have their own way of configuring CORS. If you are seeing CORS errors when uploading you should refer to your host's documentation on how to setup cross origin permissions.
+
+- Similar to CORS, every provider will have their own defaults for bucket permissions. Most providers support [signed temporary URLs](/private-uploads#generating-temporary-access-urls) for accessing files in private buckets.
+
+## Supported providers
+
+While this library should work with any S3 compatible provider, it has been tested with the following:
+
+- Digital ocean spaces
+- Cloudflare R2
+
+If you are running into any issues setting up this library with an S3 compatible host please [open an issue](https://github.com/ryanto/next-s3-upload) on GitHub.
