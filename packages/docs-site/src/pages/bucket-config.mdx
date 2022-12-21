@@ -31,7 +31,7 @@ Remember to always store your `accessKeyId` and `secretAccessKey` in environment
 
 ## Bucket endpoint
 
-You can also set the bucket endpoint using the API route. This is only needed if you are using a [non-AWS host](/other-providers).
+You can also set the bucket endpoint as well as the path style using the API route. This is only needed if you are using a [non-AWS host](/other-providers).
 
 ```js
 // pages/api/s3-upload.js
@@ -39,7 +39,8 @@ import { APIRoute } from "next-s3-upload";
 
 export default APIRoute.configure({
   // ..
-  endpoint: "https://nyc3.digitaloceanspaces.com"
+  endpoint: "https://my.endpoint",
+  forcePathStyle: true
 });
 ```
 
