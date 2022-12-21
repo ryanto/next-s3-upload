@@ -10,6 +10,7 @@ export function getClient(s3Config?: S3Config) {
       secretAccessKey: config.secretAccessKey,
     },
     region: config.region,
+    ...(config.forcePathStyle ? { forcePathStyle: config.forcePathStyle } : {}),
     ...(config.endpoint ? { endpoint: config.endpoint } : {}),
   });
 

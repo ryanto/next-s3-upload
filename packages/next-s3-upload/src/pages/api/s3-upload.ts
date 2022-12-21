@@ -29,6 +29,7 @@ let makeRouteHandler = (options: Options = {}): Handler => {
       secretAccessKey: options.secretAccessKey,
       bucket: options.bucket,
       region: options.region,
+      forcePathStyle: options.forcePathStyle,
       endpoint: options.endpoint,
     });
 

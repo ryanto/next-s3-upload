@@ -4,6 +4,7 @@ export type S3Config = {
   bucket?: string;
   region?: string;
   endpoint?: string;
+  forcePathStyle?: boolean;
 };
 
 export function getConfig(s3Config?: S3Config) {
@@ -14,5 +15,6 @@ export function getConfig(s3Config?: S3Config) {
     bucket: s3Config?.bucket ?? `${process.env.S3_UPLOAD_BUCKET}`,
     region: s3Config?.region ?? `${process.env.S3_UPLOAD_REGION}`,
     endpoint: s3Config?.endpoint,
+    forcePathStyle: s3Config?.forcePathStyle,
   };
 }
