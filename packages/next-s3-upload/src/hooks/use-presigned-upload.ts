@@ -17,7 +17,7 @@ let upload: Uploader = async (file, params, { onProgress }) => {
 
     xhr.onreadystatechange = function() {
       if (xhr.readyState === 4) {
-        if (xhr.status >= 200 || xhr.status < 300) {
+        if (xhr.status >= 200 && xhr.status < 300) {
           resolve();
         } else {
           reject();
