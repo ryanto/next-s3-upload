@@ -114,7 +114,7 @@ let makeRouteHandler = (options: Options = {}): Handler => {
 };
 
 let missingEnvs = (config: Record<string, any>): string[] => {
-  let required = ['accessKeyId', 'secretAccessKey', 'bucket', 'region'];
+  let required = ['bucket', 'region'];
 
   return required.filter(key => !config[key] || config.key === '');
 };
