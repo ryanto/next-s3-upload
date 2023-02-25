@@ -34,6 +34,7 @@ The `uploadToS3` can take options that allow you to customize the request send t
 uploadToS3(file, {
   endpoint: {
     request: {
+      url: "/api/next-s3-upload",
       body: {},
       headers: {}
     }
@@ -41,10 +42,11 @@ uploadToS3(file, {
 });
 ```
 
-| Option                     | Description                               |
-| -------------------------- | ----------------------------------------- |
-| `endpoint.request.body`    | Additional data sent in the body payload. |
-| `endpoint.request.headers` | Additional HTTP request headers.          |
+| Option                     | Description                                                                      |
+| -------------------------- | -------------------------------------------------------------------------------- |
+| `endpoint.request.url`     | The location of the Next S3 Upload API route. Defaults to `/api/next-s3-upload`. |
+| `endpoint.request.body`    | Additional data sent in the body payload.                                        |
+| `endpoint.request.headers` | Additional HTTP request headers.                                                 |
 
 ## Files
 

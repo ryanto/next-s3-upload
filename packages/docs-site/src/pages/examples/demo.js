@@ -1,5 +1,5 @@
-import { useS3Upload } from 'next-s3-upload';
-import { useState } from 'react';
+import { useS3Upload } from "next-s3-upload";
+import { useState } from "react";
 
 export default function UploadTest() {
   let [imageUrl, setImageUrl] = useState();
@@ -9,15 +9,15 @@ export default function UploadTest() {
     let { url } = await uploadToS3(file);
     setImageUrl(url);
 
-    let printUrl = url.replace(/^https:\/\//, 'https:‎//');
+    let printUrl = url.replace(/^https:\/\//, "https:‎//");
 
     console.log(
       `%cSuccessfully uploaded to S3!`,
-      'background: #15803d; color: white; padding: 8px 12px'
+      "background: #15803d; color: white; padding: 8px 12px"
     );
     console.log(
       `%c${printUrl}`,
-      'background: #4f46e5; color: white; padding: 8px 12px'
+      "background: #4f46e5; color: white; padding: 8px 12px"
     );
   };
 

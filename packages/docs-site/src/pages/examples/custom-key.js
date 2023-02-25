@@ -3,11 +3,17 @@ import { useS3Upload } from "next-s3-upload";
 
 export default function UploadTest() {
   let [imageUrl, setImageUrl] = useState();
-  let { uploadToS3 } = useS3Upload({ endpoint: "/api/custom-key" });
+  let { uploadToS3 } = useS3Upload();
 
   const handleFileChange = async ({ target }) => {
     let file = target.files[0];
-    let { url } = await uploadToS3(file);
+    let { url } = await uploadToS3(file, {
+      endpoint: {
+        request: {
+          url: "/api/custom-key"
+        }
+      }
+    });
     setImageUrl(url);
   };
 
