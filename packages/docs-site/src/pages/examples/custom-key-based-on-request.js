@@ -6,9 +6,7 @@ export default function UploadTest() {
   let [bodyName, setBodyName] = useState("");
   let [imageUrl, setImageUrl] = useState();
 
-  let { uploadToS3 } = useS3Upload({
-    endpoint: "/api/custom-key-based-on-request"
-  });
+  let { uploadToS3 } = useS3Upload();
 
   const handleFileChange = async ({ target }) => {
     let file = target.files[0];
@@ -16,6 +14,7 @@ export default function UploadTest() {
     let { url } = await uploadToS3(file, {
       endpoint: {
         request: {
+          url: "/api/custom-key-based-on-request",
           headers: {
             "X-Header-Name": headerName
           },

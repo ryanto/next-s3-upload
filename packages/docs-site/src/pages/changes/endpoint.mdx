@@ -1,0 +1,49 @@
+# Endpoint
+
+Previously there was an undocumented feature in this library that you specify the location of the Next S3 Upload API route. This was useful for applications that had custom base paths or needed two versions of the API route.
+
+The API route endpoint is still customizable, but the option has moved from the `useS3Upload()` hook into the `uploadToS3()` function.
+
+The reason for this change is that it simplifies the library code and keeps all customizations inside of the `uploadToS3()` function.
+
+## Updating your code
+
+Your old code will continue to work as expected, but it is recommended you update and use the new endpoint format.
+
+To update, remove the `endpoint` option from `useS3Upload()`:
+
+```js
+// OLD - using `endpoint`
+
+function Component() {
+  // Remove `endpoint`
+  let { uploadToS3 } = useS3Upload({ endpoint: "/my/custom/api" });
+
+  function handleUpload(file) {
+    uploadToS3(file);
+  }
+}
+```
+
+And move it into the `uploadToS3` function using `endpoint.request.url`.
+
+```js
+// NEW - Use `endpoint.request.url` to set a custom api route
+
+function Component() {
+  let { uploadToS3 } = useS3Upload();
+
+  function handleUpload(file) {
+    // Add `endpoint.request.url`
+    uploadToS3(file, {
+      endpoint: {
+        request: {
+          url: "/my/custom/api"
+        }
+      }
+    });
+  }
+}
+```
+
+Once you make this change the console warning message will go away.

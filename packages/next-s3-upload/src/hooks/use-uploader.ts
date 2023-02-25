@@ -18,17 +18,26 @@ type UploadToS3Options = {
   };
 };
 
+// Outdated options we no longer want support.
+type OldOptions = {
+  endpoint: string;
+};
+
 type Strategy = 'presigned' | 'aws-sdk';
 
-export type Uploader = (
+export type Uploader<P = any> = (
   file: File,
-  params: Record<string, any>,
+  params: P,
   eventHandlers: {
     onProgress: (uploaded: number) => void;
   }
 ) => Promise<UploadResult>;
 
-export const useUploader = (strategy: Strategy, uploader: Uploader) => {
+export const useUploader = (
+  strategy: Strategy,
+  uploader: Uploader,
+  oldOptions?: OldOptions
+) => {
   let {
     addFile,
     updateFileProgress,
@@ -39,6 +48,25 @@ export const useUploader = (strategy: Strategy, uploader: Uploader) => {
   } = useUploadFiles();
 
   let uploadToS3 = async (file: File, options: UploadToS3Options = {}) => {
+    // combine old options and new options. remove after 1.0
+    if (oldOptions?.endpoint) {
+      if (process.env.NODE_ENV === 'development') {
+        console.warn(
+          '[Next S3 Upload] The `endpoint` option has been replaced by `endpoint.request.url`. For more information see: https://next-s3-upload.codingvalue.com//changes/endpoint'
+        );
+      }
+
+      if (options.endpoint) {
+        options.endpoint.request.url = oldOptions.endpoint;
+      } else {
+        options.endpoint = {
+          request: {
+            url: oldOptions.endpoint,
+          },
+        };
+      }
+    }
+
     let params = await getUploadParams(
       strategy,
       file,
@@ -69,18 +97,16 @@ export const useUploader = (strategy: Strategy, uploader: Uploader) => {
 };
 
 let getUploadParams = async (
-  strategy: 'presigned' | 'aws-sdk',
+  strategy: Strategy,
   file: File,
   requestOptions?: RequestOptions
 ) => {
-  let filename = encodeURIComponent(file.name);
-
   let additionalBody = requestOptions?.body ?? {};
   let additionalHeaders = requestOptions?.headers ?? {};
   let apiRouteUrl = requestOptions?.url ?? '/api/s3-upload';
 
   let body = {
-    filename,
+    filename: file.name,
     filetype: file.type,
     _nextS3: {
       strategy,
