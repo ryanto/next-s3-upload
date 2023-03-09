@@ -12,7 +12,7 @@ yarn add next-s3-upload
 
 ## Environment variables
 
-You'll need to setup the following environment variables for this package to work correctly.
+You'll need to setup the following environment variables for this package to work correctly, unless you are using the [IAM EC2 Instance Roles option](/bucket-config) in which case the S3_UPLOAD_KEY, S3_UPLOAD_SECRET and S3_UPLOAD_REGION keys are not required.
 
 ```bash
 S3_UPLOAD_KEY=AAAAAAAAAAAAAAAAAAAA
