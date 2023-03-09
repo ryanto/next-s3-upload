@@ -31,6 +31,7 @@ let makeRouteHandler = (options: Options = {}): Handler => {
       region: options.region,
       forcePathStyle: options.forcePathStyle,
       endpoint: options.endpoint,
+      useInstanceRole: options.useInstanceRole,
     });
 
     let missing = missingEnvs(config);
@@ -45,7 +46,7 @@ let makeRouteHandler = (options: Options = {}): Handler => {
       let key = options.key
         ? await Promise.resolve(options.key(req, filename))
         : `next-s3-uploads/${uuid()}/${sanitizeKey(filename)}`;
-      let { bucket, region, endpoint } = config;
+      let { bucket, region, endpoint, useInstanceRole } = config;
 
       if (uploadType === 'presigned') {
         let filetype = req.body.filetype;
@@ -69,13 +70,23 @@ let makeRouteHandler = (options: Options = {}): Handler => {
           url,
         });
       } else {
-        let stsConfig: STSClientConfig = {
-          credentials: {
-            accessKeyId: config.accessKeyId,
-            secretAccessKey: config.secretAccessKey,
-          },
-          region,
-        };
+
+        let stsConfig: STSClientConfig = {};
+
+        if (!useInstanceRole) {
+          Object.assign(stsConfig, {
+            credentials: {
+              accessKeyId: config.accessKeyId,
+              secretAccessKey: config.secretAccessKey,
+            },
+          })
+        }
+
+        if (region) {
+          Object.assign(stsConfig, {
+            region
+          })
+        }
 
         let policy = {
           Statement: [
@@ -114,7 +125,13 @@ let makeRouteHandler = (options: Options = {}): Handler => {
 };
 
 let missingEnvs = (config: Record<string, any>): string[] => {
-  let required = ['accessKeyId', 'secretAccessKey', 'bucket', 'region'];
+  let required;
+
+  if (config.useInstanceRole) {
+    required = ['bucket'];
+  } else {
+    required = ['accessKeyId', 'secretAccessKey', 'bucket', 'region'];
+  }
 
   return required.filter(key => !config[key] || config.key === '');
 };

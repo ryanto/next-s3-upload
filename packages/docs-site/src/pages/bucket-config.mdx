@@ -29,6 +29,20 @@ export default APIRoute.configure({
 
 Remember to always store your `accessKeyId` and `secretAccessKey` in environment variables. It's a security risk to check-in the plain text version of these keys when using version control. Environment variables work best because they keep the actual values out of commit history.
 
+## Using IAM EC2 Instance Roles/Profiles
+
+If you are using [IAM Instance Roles on an EC2 instance](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html), and wish to use the instance role to access S3, pass the following custom configuration object. The library will automatically attempt to connect using the role assigned to the EC2 instance.
+
+```js
+// pages/api/s3-upload.js
+import { APIRoute } from "next-s3-upload";
+
+export default APIRoute.configure({
+  bucket: "bucket-name",
+  useInstanceRole: true
+});
+```
+
 ## Bucket endpoint
 
 You can also set the bucket endpoint as well as the path style using the API route. This is only needed if you are using a [non-AWS host](/other-providers).
