@@ -11,7 +11,14 @@ export function getClient(s3Config?: S3Config) {
   }
 
   if (!config.useInstanceRole) {
-
+    Object.assign(clientConfig,
+      {
+        credentials: {
+          accessKeyId: config.accessKeyId,
+          secretAccessKey: config.secretAccessKey,
+        }
+      }
+    );
   }
 
   let client = new S3Client(clientConfig);
