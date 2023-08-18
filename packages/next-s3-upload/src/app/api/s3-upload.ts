@@ -13,11 +13,14 @@ import { sanitizeKey, uuid } from '../../utils/keys';
 // Uses syntax for app directory route https://nextjs.org/docs/app/building-your-application/routing/route-handlers#convention
 type NextAppRouteHandler = (req: NextRequest) => Promise<Response>;
 
+type Configure = (options: Options) => Handler;
+type Handler = NextAppRouteHandler & { configure: Configure };
+
 type Options = S3Config & {
   key?: (req: NextRequest, filename: string) => string | Promise<string>;
 };
 
-const makeRouteHandler = (options: Options = {}): NextAppRouteHandler => {
+const makeRouteHandler = (options: Options = {}): Handler => {
   const route: NextAppRouteHandler = async req => {
     const config = getConfig({
       accessKeyId: options.accessKeyId,
@@ -37,14 +40,14 @@ const makeRouteHandler = (options: Options = {}): NextAppRouteHandler => {
       });
     }
 
-    let body = await req.json();
-    let uploadType = body._nextS3?.strategy;
-    let filename = body.filename;
+    const body = await req.json();
+    const uploadType = body._nextS3?.strategy;
+    const filename = body.filename;
 
-    let key = options.key
+    const key = options.key
       ? await Promise.resolve(options.key(req, filename))
       : `next-s3-uploads/${uuid()}/${sanitizeKey(filename)}`;
-    let { bucket, region, endpoint } = config;
+    const { bucket, region, endpoint } = config;
 
     if (uploadType === 'presigned') {
       const filetype = body.filetype;
@@ -114,7 +117,9 @@ const makeRouteHandler = (options: Options = {}): NextAppRouteHandler => {
     }
   };
 
-  return route;
+  const configure = (options: Options) => makeRouteHandler(options);
+
+  return Object.assign(route, { configure });
 };
 
 const missingEnvs = (config: Record<string, any>): string[] => {
