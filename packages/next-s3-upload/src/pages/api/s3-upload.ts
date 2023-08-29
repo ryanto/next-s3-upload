@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { S3Config } from '../../utils/config';
+import { sanitizeKey, uuid } from '../../utils/keys';
 import { route } from '../../utils/route-builder';
 
 type NextRouteHandler = (
@@ -15,10 +16,20 @@ type Options = S3Config & {
 };
 
 let makeRouteHandler = (options: Options = {}): Handler => {
-  const nextPageRoute: NextRouteHandler = async function(req, res) {
+  const nextPageRoute: NextRouteHandler = async function (req, res) {
+    const { body: reqBody } = req.body;
+    const { filename } = reqBody;
+
+    const { key, ...s3Options } = options;
+
+    const fileKey = key
+      ? await Promise.resolve(key(req, filename))
+      : `next-s3-uploads/${uuid()}/${sanitizeKey(filename)}`;
+
     const { status, body } = await route({
-      body: req.body,
-      options: options, // Needs to be abstracted into RouteOptions still
+      body: reqBody,
+      s3Options: s3Options,
+      fileKey: fileKey,
     });
 
     res.status(status).json(body);
