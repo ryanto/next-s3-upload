@@ -13,7 +13,7 @@ type Options = S3Config & {
 };
 
 const makeRouteHandler = (options: Options = {}): Handler => {
-  const nextAppRoute: NextAppRouteHandler = async function (req) {
+  const nextAppRoute: NextAppRouteHandler = async function(req) {
     const reqBody = await req.json();
     const { filename } = reqBody;
 
@@ -23,13 +23,18 @@ const makeRouteHandler = (options: Options = {}): Handler => {
       ? await Promise.resolve(key(req, filename))
       : `next-s3-uploads/${uuid()}/${sanitizeKey(filename)}`;
 
-    const response = await route({
-      body: reqBody,
-      s3Options: s3Options,
-      fileKey: fileKey,
-    });
+    try {
+      const response = await route({
+        body: reqBody,
+        s3Options: s3Options,
+        fileKey: fileKey,
+      });
 
-    return NextResponse.json(response);
+      return NextResponse.json(response);
+    } catch (e) {
+      console.error(e);
+      return NextResponse.error();
+    }
   };
 
   const configure = (options: Options) => makeRouteHandler(options);

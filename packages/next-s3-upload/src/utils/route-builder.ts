@@ -2,11 +2,19 @@ import {
   STSClient,
   GetFederationTokenCommand,
   STSClientConfig,
+  GetFederationTokenCommandOutput,
 } from '@aws-sdk/client-sts';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { getConfig, S3Config } from './config';
 import { getClient } from './client';
+
+export class RouteBuilderError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'RouteBuilderError';
+  }
+}
 
 type RouteRequest = {
   _nextS3?: {
@@ -24,12 +32,23 @@ type BaseRouteHandler = ({
   body: RouteRequest;
   fileKey: string;
   s3Options: S3Config;
-}) => Promise<{
-  body: any;
-  status: number;
-}>;
+}) => Promise<
+  | {
+      fileKey: string;
+      bucket: string;
+      region: string;
+      endpoint?: string;
+      url: string;
+    }
+  | {
+      token: GetFederationTokenCommandOutput;
+      fileKey: string;
+      bucket: string;
+      region: string;
+    }
+>;
 
-export const route: BaseRouteHandler = async function ({
+export const route: BaseRouteHandler = async function({
   body,
   fileKey,
   s3Options,
@@ -38,17 +57,16 @@ export const route: BaseRouteHandler = async function ({
 
   const missing = missingEnvs(config);
   if (missing.length > 0) {
-    return {
-      status: 500,
-      body: `Next S3 Upload: Missing ENVs ${missing.join(', ')}`,
-    };
+    throw new RouteBuilderError(
+      `Next S3 Upload: Missing ENVs ${missing.join(', ')}`
+    );
   }
 
   const uploadType = body._nextS3?.strategy;
   const { bucket, region, endpoint } = config;
 
   if (uploadType === 'presigned') {
-    const filetype = body.filetype;
+    const { filetype } = body;
     const client = getClient(config);
     const params = {
       Bucket: bucket,
@@ -62,14 +80,11 @@ export const route: BaseRouteHandler = async function ({
     });
 
     return {
-      status: 200,
-      body: {
-        fileKey,
-        bucket,
-        region,
-        endpoint,
-        url,
-      },
+      fileKey,
+      bucket,
+      region,
+      endpoint,
+      url,
     };
   } else {
     const stsConfig: STSClientConfig = {
@@ -102,13 +117,10 @@ export const route: BaseRouteHandler = async function ({
     const token = await sts.send(command);
 
     return {
-      status: 200,
-      body: {
-        token,
-        fileKey,
-        bucket,
-        region,
-      },
+      token,
+      fileKey,
+      bucket,
+      region,
     };
   }
 };
@@ -116,5 +128,5 @@ export const route: BaseRouteHandler = async function ({
 const missingEnvs = (config: Record<string, any>): string[] => {
   const required = ['accessKeyId', 'secretAccessKey', 'bucket', 'region'];
 
-  return required.filter((key) => !config[key] || config.key === '');
+  return required.filter(key => !config[key] || config.key === '');
 };

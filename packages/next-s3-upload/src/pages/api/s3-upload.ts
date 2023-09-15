@@ -16,7 +16,7 @@ type Options = S3Config & {
 };
 
 let makeRouteHandler = (options: Options = {}): Handler => {
-  const nextPageRoute: NextRouteHandler = async function (req, res) {
+  const nextPageRoute: NextRouteHandler = async function(req, res) {
     const { body: reqBody } = req.body;
     const { filename } = reqBody;
 
@@ -26,13 +26,18 @@ let makeRouteHandler = (options: Options = {}): Handler => {
       ? await Promise.resolve(key(req, filename))
       : `next-s3-uploads/${uuid()}/${sanitizeKey(filename)}`;
 
-    const { status, body } = await route({
-      body: reqBody,
-      s3Options: s3Options,
-      fileKey: fileKey,
-    });
+    try {
+      const body = await route({
+        body: reqBody,
+        s3Options: s3Options,
+        fileKey: fileKey,
+      });
 
-    res.status(status).json(body);
+      res.status(200).json(body);
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   };
 
   let configure = (options: Options) => makeRouteHandler(options);
