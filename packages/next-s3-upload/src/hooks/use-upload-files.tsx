@@ -45,7 +45,13 @@ export const useUploadFiles = () => {
   let addFile = (file: File) => {
     setFiles(files => [
       ...files,
-      { file, progress: 0, uploaded: 0, size: file.size, id: uuid()},
+      {
+        file,
+        progress: 0,
+        uploaded: 0,
+        size: file.size,
+        id: uuid(),
+      },
     ]);
   };
 
