@@ -1,12 +1,14 @@
 import React from 'react';
 import { FileInput } from '../components/file-input';
 import { useRef, useState } from 'react';
+import { uuid } from '../utils/keys';
 
 type TrackedFile = {
   file: File;
   progress: number;
   uploaded: number;
   size: number;
+  id: string;
 };
 
 export const useUploadFiles = () => {
@@ -31,6 +33,7 @@ export const useUploadFiles = () => {
           ? {
               file,
               uploaded,
+              id: trackedFile.id,
               size: file.size,
               progress: file.size ? (uploaded / file.size) * 100 : 0,
             }
@@ -42,7 +45,7 @@ export const useUploadFiles = () => {
   let addFile = (file: File) => {
     setFiles(files => [
       ...files,
-      { file, progress: 0, uploaded: 0, size: file.size },
+      { file, progress: 0, uploaded: 0, size: file.size, id: uuid()},
     ]);
   };
 
