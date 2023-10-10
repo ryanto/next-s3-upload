@@ -4,6 +4,7 @@ import {
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 import { Uploader, useUploader } from './use-uploader';
+import { FetchHttpHandler } from '@smithy/fetch-http-handler';
 
 type Params = {
   key: string;
@@ -16,6 +17,7 @@ let upload: Uploader<Params> = async (file, params, { onProgress }) => {
   let { key, bucket, token, region } = params;
 
   let client = new S3Client({
+    requestHandler: new FetchHttpHandler({ keepAlive: false }),
     credentials: {
       accessKeyId: token.Credentials.AccessKeyId,
       secretAccessKey: token.Credentials.SecretAccessKey,
