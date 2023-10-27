@@ -8,7 +8,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node: ['16.x']
+        node: ['20.x']
         os: [ubuntu-latest]
 
     steps:
@@ -56,7 +56,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
-          node-version: 16.13.0
+          node-version: 20.9.0
           cache: "yarn"
 
       - name: Install dependencies
