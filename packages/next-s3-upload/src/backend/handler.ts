@@ -2,19 +2,21 @@ import {
   STSClient,
   GetFederationTokenCommand,
   STSClientConfig,
-} from '@aws-sdk/client-sts';
-import { PutObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { S3Config, getConfig } from '../utils/config';
-import { getClient } from '../utils/client';
-import { sanitizeKey, uuid } from '../utils/keys';
-import { NextApiRequest } from 'next';
-import { NextRequest } from 'next/server';
+} from "@aws-sdk/client-sts";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { S3Config, getConfig } from "../utils/config";
+import { getClient } from "../utils/client";
+import { sanitizeKey, uuid } from "../utils/keys";
+import { NextApiRequest } from "next";
+import { NextRequest } from "next/server";
 
 type AppOrPagesRequest = NextApiRequest | NextRequest;
 
 export type Options<R extends AppOrPagesRequest> = S3Config & {
   key?: (req: R, filename: string) => string | Promise<string>;
+  bucket?: (req: R, filename: string) => string | Promise<string>;
+  region?: (req: R, filename: string) => string | Promise<string>;
 };
 
 export async function handler<R extends NextApiRequest | NextRequest>({
@@ -28,7 +30,7 @@ export async function handler<R extends NextApiRequest | NextRequest>({
 
   let missing = missingEnvs(s3Config);
   if (missing.length > 0) {
-    throw new Error(`Next S3 Upload: Missing ENVs ${missing.join(', ')}`);
+    throw new Error(`Next S3 Upload: Missing ENVs ${missing.join(", ")}`);
   }
 
   // upgrade typescript and use 'in'
@@ -41,16 +43,23 @@ export async function handler<R extends NextApiRequest | NextRequest>({
     : `next-s3-uploads/${uuid()}/${sanitizeKey(filename)}`;
 
   const uploadType = body._nextS3?.strategy;
-  const { bucket, region, endpoint } = s3Config;
 
-  if (uploadType === 'presigned') {
+  const bucket = options.bucket
+    ? await Promise.resolve(options.bucket(request, filename))
+    : s3Config.bucket;
+
+  const region = options.bucket
+    ? await Promise.resolve(options.bucket(request, filename))
+    : s3Config.region;
+
+  if (uploadType === "presigned") {
     let { filetype } = body;
     let client = getClient(s3Config);
     let params = {
       Bucket: bucket,
       Key: key,
       ContentType: filetype,
-      CacheControl: 'max-age=630720000',
+      CacheControl: "max-age=630720000",
     };
 
     let url = await getSignedUrl(client, new PutObjectCommand(params), {
@@ -61,7 +70,7 @@ export async function handler<R extends NextApiRequest | NextRequest>({
       key,
       bucket,
       region,
-      endpoint,
+      endpoint: s3Config.endpoint,
       url,
     };
   } else {
@@ -76,9 +85,9 @@ export async function handler<R extends NextApiRequest | NextRequest>({
     let policy = {
       Statement: [
         {
-          Sid: 'Stmt1S3UploadAssets',
-          Effect: 'Allow',
-          Action: ['s3:PutObject'],
+          Sid: "Stmt1S3UploadAssets",
+          Effect: "Allow",
+          Action: ["s3:PutObject"],
           Resource: [`arn:aws:s3:::${bucket}/${key}`],
         },
       ],
@@ -87,7 +96,7 @@ export async function handler<R extends NextApiRequest | NextRequest>({
     let sts = new STSClient(stsConfig);
 
     let command = new GetFederationTokenCommand({
-      Name: 'S3UploadWebToken',
+      Name: "S3UploadWebToken",
       Policy: JSON.stringify(policy),
       DurationSeconds: 60 * 60, // 1 hour
     });
@@ -104,7 +113,7 @@ export async function handler<R extends NextApiRequest | NextRequest>({
 }
 
 const missingEnvs = (config: Record<string, any>): string[] => {
-  const required = ['accessKeyId', 'secretAccessKey', 'bucket', 'region'];
+  const required = ["accessKeyId", "secretAccessKey", "bucket", "region"];
 
-  return required.filter(key => !config[key] || config.key === '');
+  return required.filter((key) => !config[key] || config.key === "");
 };
