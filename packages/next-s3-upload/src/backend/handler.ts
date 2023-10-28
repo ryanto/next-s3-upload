@@ -48,8 +48,8 @@ export async function handler<R extends NextApiRequest | NextRequest>({
     ? await Promise.resolve(options.bucket(request, filename))
     : s3Config.bucket;
 
-  const region = options.bucket
-    ? await Promise.resolve(options.bucket(request, filename))
+  const region = options.region
+    ? await Promise.resolve(options.region(request, filename))
     : s3Config.region;
 
   if (uploadType === "presigned") {
