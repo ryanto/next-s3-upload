@@ -23,12 +23,6 @@ jobs:
       - name: Install deps and build (with cache)
         uses: bahmutov/npm-install@v1
 
-      - name: Lint
-        run: yarn workspace next-s3-upload lint
-
-      - name: Test
-        run: yarn workspace next-s3-upload test --ci --coverage --maxWorkers=2
-
       - name: Build
         run: yarn workspace next-s3-upload build
 

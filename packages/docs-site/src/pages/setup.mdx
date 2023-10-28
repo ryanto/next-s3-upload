@@ -160,7 +160,22 @@ Once the user is created you'll see a screen with their API keys. Copy these key
 
 That's it! We're done configuring AWS for uploads.
 
-## API Route
+## API Route (App router)
+
+_Only follow this step if you're using the App Router_
+
+In order for our Next app to securely communicate with S3 we'll need to create an API route. Paste the following into `app/api/s3-upload/route.js`.
+
+```js
+// app/api/s3-upload/route.js
+export { POST } from "next-s3-upload/route";
+```
+
+That's it. This module's `POST` takes care of all the communication with S3.
+
+## API Route (Pages router)
+
+_Only follow this step if you're using the pages router._
 
 In order for our Next app to securely communicate with S3 we'll need to create an API route. Paste the following into `pages/api/s3-upload.js`.
 
@@ -170,5 +185,7 @@ export { APIRoute as default } from "next-s3-upload";
 ```
 
 That's it. This module's `APIRoute` takes care of all the communication with S3.
+
+## Next steps
 
 You're now ready to [start uploading](/basic-example) files to your S3 bucket!

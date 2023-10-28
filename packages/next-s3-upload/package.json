@@ -1,8 +1,11 @@
 {
+  "name": "next-s3-upload",
+  "author": "Ryan Toronto <ryanto@gmail.com>",
   "version": "0.3.3",
   "license": "MIT",
+  "repository": "github:ryanto/next-s3-upload",
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "module": "dist/index.js",
   "files": [
     "dist",
     "src"
@@ -10,54 +13,48 @@
   "engines": {
     "node": ">=10"
   },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs.js"
+    },
+    "./route": {
+      "import": "./dist/route.js",
+      "require": "./dist/route.cjs.js"
+    }
+  },
+  "typings": "dist/types.d.ts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/*",
+        "./dist/index"
+      ]
+    }
+  },
   "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build",
-    "test": "tsdx test --passWithNoTests",
-    "lint": "tsdx lint",
-    "prepare": "tsdx build",
-    "size": "size-limit",
-    "analyze": "size-limit --why"
+    "dev": "vite build --watch",
+    "build": "vite build"
   },
   "peerDependencies": {
     "next": ">=9.4",
     "react": ">=16"
   },
-  "repository": "github:ryanto/next-s3-upload",
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
-  },
-  "name": "next-s3-upload",
-  "author": "Ryan Toronto <ryanto@gmail.com>",
-  "module": "dist/next-s3-upload.esm.js",
-  "size-limit": [
-    {
-      "path": "dist/next-s3-upload.cjs.production.min.js",
-      "limit": "10 KB"
-    },
-    {
-      "path": "dist/next-s3-upload.esm.js",
-      "limit": "10 KB"
-    }
-  ],
   "devDependencies": {
+    "@rollup/plugin-typescript": "^11.1.5",
     "@size-limit/preset-small-lib": "^4.7.0",
     "@types/node": "^14.14.7",
     "@types/react": "^16.9.56",
     "@types/react-dom": "^16.9.9",
     "@types/uuid": "^8.3.0",
-    "babel-jest": "^26.6.3",
-    "husky": "^4.3.0",
+    "@vitejs/plugin-react": "^4.1.0",
+    "eslint-config-react-app": "^7.0.1",
     "next": "^10.0.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "size-limit": "^4.7.0",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.1.0",
-    "typescript": "^4.2.3"
+    "typescript": "^5",
+    "vite": "^4.5.0"
   },
   "dependencies": {
     "@aws-sdk/client-s3": ">=3.427.0",

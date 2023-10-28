@@ -1,8 +1,8 @@
 {
   "private": true,
-  "workspaces": ["packages/next-s3-upload", "packages/docs-site"],
+  "workspaces": ["packages/next-s3-upload", "packages/docs-site", "test-apps/app-dir"],
   "scripts": {
-    "dev": "yarn workspace next-s3-upload start",
+    "dev": "yarn workspace next-s3-upload dev",
     "build": "yarn workspace next-s3-upload build",
     "docs": "yarn workspace docs-site dev",
     "test": "yarn workspace docs-site cypress run"
