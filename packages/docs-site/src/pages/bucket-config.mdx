@@ -45,3 +45,31 @@ export default APIRoute.configure({
 ```
 
 Now your upload will work with any S3 compatible web host.
+
+## Dynamic Bucket configuration
+
+Bucket configuration can be dynamic based on request data.
+This is useful if you want to upload files to different buckets in the same AWS account depending on the request or some other criteria.
+
+Warning: We recommend not using this feature to set bucket name via Request body as that could lead to security issues.
+Instead, ensure the bucket name is still set from predicated values within the function.
+
+```js
+// pages/api/s3-upload.js
+import { APIRoute } from "next-s3-upload";
+
+export default APIRoute.configure({
+  // ..
+  async bucketName(req) {
+    const { uploadType } = req.body;
+    const bucket =
+      uploadType === S3UploadType.public
+        ? process.env.S3_PUBLIC_BUCKET
+        : process.env.S3_PRIVATE_BUCKET;
+
+    // May extend to more options
+    return bucket;
+  },
+});
+```
+
