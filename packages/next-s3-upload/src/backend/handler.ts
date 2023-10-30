@@ -15,8 +15,8 @@ type AppOrPagesRequest = NextApiRequest | NextRequest;
 
 export type Options<R extends AppOrPagesRequest> = S3Config & {
   key?: (req: R, filename: string) => string | Promise<string>;
-  bucket?: (req: R, filename: string) => string | Promise<string>;
-  region?: (req: R, filename: string) => string | Promise<string>;
+  bucketName?: (req: R, filename?: string) => string | Promise<string>;
+  regionName?: (req: R, filename?: string) => string | Promise<string>;
 };
 
 export async function handler<R extends NextApiRequest | NextRequest>({
@@ -44,12 +44,12 @@ export async function handler<R extends NextApiRequest | NextRequest>({
 
   const uploadType = body._nextS3?.strategy;
 
-  const bucket = options.bucket
-    ? await Promise.resolve(options.bucket(request, filename))
+  const bucket = options.bucketName
+    ? await Promise.resolve(options.bucketName(request, filename))
     : s3Config.bucket;
 
-  const region = options.region
-    ? await Promise.resolve(options.region(request, filename))
+  const region = options.regionName
+    ? await Promise.resolve(options.regionName(request, filename))
     : s3Config.region;
 
   if (uploadType === 'presigned') {
@@ -117,3 +117,4 @@ const missingEnvs = (config: Record<string, any>): string[] => {
 
   return required.filter((key) => !config[key] || config.key === '');
 };
+
