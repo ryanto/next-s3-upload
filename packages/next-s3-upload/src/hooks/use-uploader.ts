@@ -23,7 +23,7 @@ type OldOptions = {
   endpoint: string;
 };
 
-type Strategy = 'presigned' | 'aws-sdk';
+type Strategy = 'presigned' | 'presigned-post' | 'aws-sdk';
 
 export type Uploader<P = any> = (
   file: File,
