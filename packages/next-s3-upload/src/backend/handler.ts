@@ -5,6 +5,7 @@ import {
 } from '@aws-sdk/client-sts';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { PresignedPostOptions, createPresignedPost } from '@aws-sdk/s3-presigned-post';
 import { S3Config, getConfig } from '../utils/config';
 import { getClient } from '../utils/client';
 import { sanitizeKey, uuid } from '../utils/keys';
@@ -63,6 +64,27 @@ export async function handler<R extends NextApiRequest | NextRequest>({
       region,
       endpoint,
       url,
+    };
+  } else if (uploadType === 'presigned-post') {
+    let client = getClient(s3Config);
+    let params: PresignedPostOptions = {
+      Bucket: bucket,
+      Key: key,
+      Expires: 60 * 60,
+      Conditions: [
+        ["content-length-range", 0, 512 * 1024],
+      ],
+    };
+
+    let { url, fields } = await createPresignedPost(client, params)
+
+    return {
+      key,
+      bucket,
+      region,
+      endpoint,
+      url,
+      fields,
     };
   } else {
     let stsConfig: STSClientConfig = {
