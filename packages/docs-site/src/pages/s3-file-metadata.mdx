@@ -1,0 +1,79 @@
+# File paths
+
+If you would like to add metadata to the your file you can do so by configuring the API route.
+
+```js
+// pages/api/s3-upload.js
+import { APIRoute } from "next-s3-upload";
+
+export default APIRoute.configure({
+  metadata(req, filename) {
+    return {
+      "metadata-key": "metadata-value",
+    };
+  },
+});
+```
+
+The key function can return a promise if you need to do something async.
+
+```js
+// pages/api/s3-upload.js
+import { APIRoute } from "next-s3-upload";
+
+export default APIRoute.configure({
+  async metadata(req, filename) {
+    let metadata = await getMetadata();
+    return metadata;
+  },
+});
+```
+
+## Data from React
+
+You can pass data from your React app to the metadata function using `uploadToS3` options.
+
+In the example below, we pass a `projectId` from the frontend using the `endpoint.request.body` option.
+
+```js
+// Frontend component
+function Component() {
+  let { uploadToS3 } = useS3Upload();
+
+  let handleSubmit = async () => {
+    // You can pass extra data using `endpoint.request.body`
+
+    await uploadToS3(file, {
+      endpoint: {
+        request: {
+          body: {
+            projectId: 123,
+          },
+        },
+      },
+    });
+  };
+}
+```
+
+Now the metadata function can read the passed `projectId` from `req.body.projectId`.
+
+```js
+// pages/api/s3-upload.js
+import { APIRoute } from "next-s3-upload";
+
+export default APIRoute.configure({
+  async metadata(req, filename) {
+    let projectId = req.body.projectId; // 123
+
+    // s3 metadata only support string key/values
+    return {
+      projectId,
+    };
+  },
+});
+```
+
+All data that needs to be passed from the frontend should be sent under the `endpoint.request.body` object, since that data will get serialized into the request's body.
+
+You can pass any data you'd like here, as long as it's serializable into JSON.
