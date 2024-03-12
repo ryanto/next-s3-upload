@@ -3,7 +3,7 @@ import {
   GetFederationTokenCommand,
   STSClientConfig,
 } from '@aws-sdk/client-sts';
-import { PutObjectCommand } from '@aws-sdk/client-s3';
+import { PutObjectCommand, PutObjectCommandInput } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { S3Config, getConfig } from '../utils/config';
 import { getClient } from '../utils/client';
@@ -15,6 +15,10 @@ type AppOrPagesRequest = NextApiRequest | NextRequest;
 
 export type Options<R extends AppOrPagesRequest> = S3Config & {
   key?: (req: R, filename: string) => string | Promise<string>;
+  metadata?: (
+    req: R,
+    filename: string
+  ) => Record<string, string> | Promise<Record<string, string>>;
 };
 
 export async function handler<R extends NextApiRequest | NextRequest>({
@@ -40,18 +44,25 @@ export async function handler<R extends NextApiRequest | NextRequest>({
     ? await Promise.resolve(options.key(request, filename))
     : `next-s3-uploads/${uuid()}/${sanitizeKey(filename)}`;
 
+  const metadata = options.metadata
+    ? await Promise.resolve(options.metadata(request, filename))
+    : undefined;
+
   const uploadType = body._nextS3?.strategy;
   const { bucket, region, endpoint } = s3Config;
 
   if (uploadType === 'presigned') {
     let { filetype } = body;
     let client = getClient(s3Config);
-    let params = {
+    let params: PutObjectCommandInput = {
       Bucket: bucket,
       Key: key,
       ContentType: filetype,
       CacheControl: 'max-age=630720000',
     };
+    if (metadata) {
+      params.Metadata = metadata;
+    }
 
     let url = await getSignedUrl(client, new PutObjectCommand(params), {
       expiresIn: 60 * 60,
@@ -106,5 +117,5 @@ export async function handler<R extends NextApiRequest | NextRequest>({
 const missingEnvs = (config: Record<string, any>): string[] => {
   const required = ['accessKeyId', 'secretAccessKey', 'bucket', 'region'];
 
-  return required.filter(key => !config[key] || config.key === '');
+  return required.filter((key) => !config[key] || config.key === '');
 };
