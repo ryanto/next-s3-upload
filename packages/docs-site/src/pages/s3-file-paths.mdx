@@ -1,6 +1,26 @@
 # File paths
 
-By default this addon will give every upload a unique key in your S3 bucket. If you would like to customize the key you can do so by configuring the API route.
+By default this addon will give every upload a unique key in your S3 bucket. If you would like to customize the key you can do so by configuring the Route Handler (App Router) or API Route (Pages Router).
+
+## Route Handler (App Router)
+
+```js
+// app/api/s3-upload/route.js
+import { POST as _POST } from "next-s3-upload/route";
+
+const handler = _POST.configure({
+  key(req, filename) {
+    return `my/uploads/path/${filename}`;
+  },
+});
+
+export { handler as POST };
+```
+
+> We'll skip the Route Handler (App Router) example going forward.
+> To apply the following examples to the Route Handler (App Router), refer to the code above.
+
+## API Route (Pages Router)
 
 ```js
 // pages/api/s3-upload.js
@@ -9,7 +29,7 @@ import { APIRoute } from "next-s3-upload";
 export default APIRoute.configure({
   key(req, filename) {
     return `my/uploads/path/${filename}`;
-  }
+  },
 });
 ```
 
@@ -23,7 +43,7 @@ export default APIRoute.configure({
   async key(req, filename) {
     let path = await getPath();
     return `${path}/${filename}`;
-  }
+  },
 });
 ```
 
@@ -38,7 +58,7 @@ import { APIRoute, sanitizeKey } from "next-s3-upload";
 export default APIRoute.configure({
   key(req, filename) {
     return `safe-file-name/${sanitizeKey(filename)}`;
-  }
+  },
 });
 ```
 
@@ -68,10 +88,10 @@ function Component() {
       endpoint: {
         request: {
           body: {
-            projectId: 123
-          }
-        }
-      }
+            projectId: 123,
+          },
+        },
+      },
     });
   };
 }
@@ -88,7 +108,7 @@ export default APIRoute.configure({
     let projectId = req.body.projectId; // 123
 
     return `projects/${projectId}/${filename}`;
-  }
+  },
 });
 ```
 
@@ -113,10 +133,10 @@ function Component() {
       endpoint: {
         request: {
           headers: {
-            authorization: authToken
-          }
-        }
-      }
+            authorization: authToken,
+          },
+        },
+      },
     });
   };
 }
@@ -133,6 +153,6 @@ export default APIRoute.configure({
     let user = await getUserFromAuthToken(req.headers.authorization);
 
     return `users/${user.id}/${filename}`;
-  }
+  },
 });
 ```
