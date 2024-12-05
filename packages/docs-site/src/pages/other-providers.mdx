@@ -8,11 +8,26 @@ This guide will show you how to use next-S3-upload with non-AWS providers.
 
 First, customize the API route to use the access keys, bucket, region, and endpoint provided by your host. For example, a Digital Ocean Spaces setup may look something like this.
 
+### Pages router
 ```js
 // pages/api/s3-upload.js
 import { APIRoute } from "next-s3-upload";
 
 export default APIRoute.configure({
+  accessKeyId: process.env.DIGITAL_OCEAN_SPACES_KEY,
+  secretAccessKey: process.env.DIGITAL_OCEAN_SPACES_SECRET,
+  bucket: "name-of-bucket",
+  region: "us-east-1",
+  endpoint: "https://nyc3.digitaloceanspaces.com"
+});
+```
+
+### App router
+```js
+// app/api/s3-upload/route.js
+import { POST as APIRoute } from "next-s3-upload/route";
+
+export const POST = APIRoute.configure({
   accessKeyId: process.env.DIGITAL_OCEAN_SPACES_KEY,
   secretAccessKey: process.env.DIGITAL_OCEAN_SPACES_SECRET,
   bucket: "name-of-bucket",
