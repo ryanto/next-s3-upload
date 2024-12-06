@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-export default function({ children, tableOfContents }) {
+export default function ({ children, tableOfContents }) {
   let bestTitle = tableOfContents[0]?.title || "Next S3 Upload";
 
   return (
@@ -71,6 +71,9 @@ export default function({ children, tableOfContents }) {
           <ul>
             <li className="pt-1 mt-1 border-l border-gray-200">
               <DocLink href="/s3-file-paths">File paths</DocLink>
+            </li>
+            <li className="pt-1 mt-1 border-l border-gray-200">
+              <DocLink href="/s3-file-metadata">File Metadata</DocLink>
             </li>
             <li className="pt-1 border-l border-gray-200">
               <DocLink href="/private-uploads">Private uploads</DocLink>
