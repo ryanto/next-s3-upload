@@ -20,6 +20,32 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
+## Setting up B2
+
+1. Create a new bucket in B2
+2. Update the CORS rules of the bucket.
+   1. You can download [this example rule file](https://github.com/backblaze-b2-samples/b2-browser-upload/blob/main/b2CorsRules.json) and tweak it accordingly.
+   2. Once that rule file is ready, execute the command `b2 bucket update --cors-rules "$(cat ~/Downloads/b2CorsRules.json)" <bucketName>`.
+3. Update [CORS rules](https://docs.aws.amazon.com/cli/latest/reference/s3api/put-bucket-cors.html) via aws cli.
+   
+    ```
+    aws s3api put-bucket-cors \
+    --bucket <MyBucket> \
+    --cors-configuration file://cors.json \
+    --endpoint-url=https://s3.us-west-004.backblazeb2.com
+    ```
+
+## Usage
+### Presigned URL
+After uploading file to a private bucket, you can generate a presigned URL for that file.
+
+```
+aws s3 presign s3://rabrain-upload/next-s3-uploads/f13091a6-dfab-4b64-87b1-0d2845507e00/b2CorsRules.json \
+--endpoint-url=https://s3.us-west-004.backblazeb2.com
+```
+
+Refer to the [official doc](https://docs.aws.amazon.com/cli/latest/reference/s3/presign.html) for more details.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

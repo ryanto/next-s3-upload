@@ -1,11 +1,11 @@
 "use client";
 
-import { useS3Upload } from "next-s3-upload";
+import { usePresignedUpload } from "next-s3-upload";
 import { useState } from "react";
 
 export function UploadFile() {
   let [imageUrl, setImageUrl] = useState<string>();
-  let { uploadToS3, FileInput, openFileDialog } = useS3Upload();
+  let { uploadToS3, FileInput, openFileDialog } = usePresignedUpload();
 
   let handleFileChange = async (file: File) => {
     let { url } = await uploadToS3(file);
