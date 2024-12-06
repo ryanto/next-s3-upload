@@ -13,7 +13,25 @@ Once these ENVs are set no other configuration is needed. Next-s3-upload will au
 
 ## Using other ENVs
 
-If you cannot define the environment variables from the previous section, you can create your own and pass them into the API route:
+If you cannot define the environment variables from the previous section, you can create your own and pass them into the Route Handler (App Router) or API Route (Pages Router).
+
+### Route handler (App Router)
+
+```js
+// app/api/s3-upload/route.js
+import { POST as _POST } from "next-s3-upload/route";
+
+const handler = _POST.configure({
+  accessKeyId: process.env.CUSTOM_ENV_ACCESS_KEY_ID,
+  secretAccessKey: process.env.CUSTOM_ENV_SECRET_ACCESS_KEY,
+  bucket: "bucket-name",
+  region: "us-east-1",
+});
+
+export { handler as POST };
+```
+
+### API Route (Pages Router)
 
 ```js
 // pages/api/s3-upload.js
@@ -23,7 +41,7 @@ export default APIRoute.configure({
   accessKeyId: process.env.CUSTOM_ENV_ACCESS_KEY_ID,
   secretAccessKey: process.env.CUSTOM_ENV_SECRET_ACCESS_KEY,
   bucket: "bucket-name",
-  region: "us-east-1"
+  region: "us-east-1",
 });
 ```
 
@@ -31,7 +49,24 @@ Remember to always store your `accessKeyId` and `secretAccessKey` in environment
 
 ## Bucket endpoint
 
-You can also set the bucket endpoint as well as the path style using the API route. This is only needed if you are using a [non-AWS host](/other-providers).
+You can also set the bucket endpoint as well as the path style using the Route Handler (App Router) or API route (Pages Router). This is only needed if you are using a [non-AWS host](/other-providers).
+
+### Route Handler (App Router)
+
+```js
+// app/api/s3-upload/route.js
+import { POST as _POST } from "next-s3-upload/route";
+
+const handler = _POST.configure({
+  // ..
+  endpoint: "https://my.endpoint",
+  forcePathStyle: true,
+});
+
+export { handler as POST };
+```
+
+### API Route (Pages Router)
 
 ```js
 // pages/api/s3-upload.js
@@ -40,7 +75,7 @@ import { APIRoute } from "next-s3-upload";
 export default APIRoute.configure({
   // ..
   endpoint: "https://my.endpoint",
-  forcePathStyle: true
+  forcePathStyle: true,
 });
 ```
 
