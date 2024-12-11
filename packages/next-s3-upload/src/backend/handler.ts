@@ -15,6 +15,8 @@ type AppOrPagesRequest = NextApiRequest | NextRequest;
 
 export type Options<R extends AppOrPagesRequest> = S3Config & {
   key?: (req: R, filename: string) => string | Promise<string>;
+  bucketName?: (req: R, filename?: string) => string | Promise<string>;
+  regionName?: (req: R, filename?: string) => string | Promise<string>;
 };
 
 export async function handler<R extends NextApiRequest | NextRequest>({
@@ -41,7 +43,14 @@ export async function handler<R extends NextApiRequest | NextRequest>({
     : `next-s3-uploads/${uuid()}/${sanitizeKey(filename)}`;
 
   const uploadType = body._nextS3?.strategy;
-  const { bucket, region, endpoint } = s3Config;
+
+  const bucket = options.bucketName
+    ? await Promise.resolve(options.bucketName(request, filename))
+    : s3Config.bucket;
+
+  const region = options.regionName
+    ? await Promise.resolve(options.regionName(request, filename))
+    : s3Config.region;
 
   if (uploadType === 'presigned') {
     let { filetype } = body;
@@ -61,7 +70,7 @@ export async function handler<R extends NextApiRequest | NextRequest>({
       key,
       bucket,
       region,
-      endpoint,
+      endpoint: s3Config.endpoint,
       url,
     };
   } else {
@@ -106,5 +115,6 @@ export async function handler<R extends NextApiRequest | NextRequest>({
 const missingEnvs = (config: Record<string, any>): string[] => {
   const required = ['accessKeyId', 'secretAccessKey', 'bucket', 'region'];
 
-  return required.filter(key => !config[key] || config.key === '');
+  return required.filter((key) => !config[key] || config.key === '');
 };
+
