@@ -14,7 +14,7 @@ import { NextRequest } from 'next/server';
 type AppOrPagesRequest = NextApiRequest | NextRequest;
 
 export type Options<R extends AppOrPagesRequest> = S3Config & {
-  key?: (req: R, filename: string) => string | Promise<string>;
+  key?: (req: R, filename: string, body?: any) => string | Promise<string>;
 };
 
 export async function handler<R extends NextApiRequest | NextRequest>({
@@ -37,7 +37,7 @@ export async function handler<R extends NextApiRequest | NextRequest>({
   let { filename } = body;
 
   const key = options.key
-    ? await Promise.resolve(options.key(request, filename))
+    ? await Promise.resolve(options.key(request, filename, body))
     : `next-s3-uploads/${uuid()}/${sanitizeKey(filename)}`;
 
   const uploadType = body._nextS3?.strategy;
