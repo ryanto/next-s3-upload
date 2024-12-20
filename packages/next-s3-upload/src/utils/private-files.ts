@@ -5,7 +5,8 @@ import { getClient } from './client';
 
 export const generateTemporaryUrl = async (
   key: string,
-  s3Config?: S3Config
+  s3Config?: S3Config,
+  expiresIn: number = 3600
 ) => {
   let config = getConfig(s3Config);
   let client = getClient(s3Config);
@@ -15,7 +16,7 @@ export const generateTemporaryUrl = async (
     Key: key,
   });
 
-  let url = await getSignedUrl(client, command, { expiresIn: 3600 });
+  let url = await getSignedUrl(client, command, { expiresIn });
 
   return url;
 };
